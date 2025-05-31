@@ -247,15 +247,21 @@ class PerformanceScreen extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          '$labelInt',
-          style: AppStyles.headingLarge.copyWith(
-            color: Colors.white,
-            fontSize: 40.sp,
+        Expanded(
+          flex: 3,
+          child: Text(
+            
+            '$labelInt',
+            style: AppStyles.headingLarge.copyWith(
+              color: Colors.white,
+              fontSize: 40.sp,
+            ),
+            maxLines: 1,
           ),
         ),
         SizedBox(width: 10.w),
         Expanded(
+          flex: 10,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
