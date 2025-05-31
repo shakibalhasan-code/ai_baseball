@@ -1,6 +1,6 @@
 class DataPoint {
   final DateTime timestamp;
-  final int value;
+  final double value;
 
   DataPoint({
     required this.timestamp,
@@ -10,7 +10,7 @@ class DataPoint {
   factory DataPoint.fromJson(List<dynamic> json) {
     return DataPoint(
       timestamp: DateTime.parse(json[0]),
-      value: json[1],
+      value: (json[1] as num).toDouble(),
     );
   }
 
@@ -223,7 +223,7 @@ class InsightsResponse {
 // Extension methods for easier data manipulation
 extension InsightsDataExtension on InsightsData {
   // Get the latest value for a specific category
-  int? getLatestValue(String category) {
+  double? getLatestValue(String category) {
     final seriesData = getSeriesByCategory(category);
     if (seriesData.isEmpty) return null;
     

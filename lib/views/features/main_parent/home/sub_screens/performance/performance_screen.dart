@@ -22,7 +22,10 @@ class PerformanceScreen extends StatelessWidget {
           onPressed: () => Get.back(),
           icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
         ),
-        title: Text('Performance - ${isWeeklyView? "Weekly": "Monthly"}', style: AppStyles.bodyMedium),
+        title: Text(
+          'Performance - ${isWeeklyView ? "Weekly" : "Monthly"}',
+          style: AppStyles.bodyMedium,
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -33,38 +36,78 @@ class PerformanceScreen extends StatelessWidget {
             children: [
               SizedBox(
                 child: Center(
-                  child: RadialPerformanceChart(
-                    radius: 150,
-                    segments: [
-                      
-                      SegmentData(
-                        percentage: performanceController.insights.value.data?.powerRatings.visualization.toDouble() ?? 0.0,
-                        color: Colors.lightGreen,
-                        label: performanceController.insights.value.data?.powerRatings.visualization.toString() ?? "N/A",
-                      ),
-                      SegmentData(
-                        percentage: performanceController.insights.value.data?.powerRatings.consistency.toDouble() ?? 0.0,
-                        color: Colors.deepPurple,
-                        label: performanceController.insights.value.data?.powerRatings.consistency.toString() ?? "N/A",
-                      ),
-                      SegmentData(
-                        percentage: performanceController.insights.value.data?.powerRatings.lifting.toDouble() ?? 0.0,
-                        color: Colors.red,
-                        label: performanceController.insights.value.data?.powerRatings.lifting.toString() ?? "N/A",
-                      ),
-                      SegmentData(
-                        percentage: performanceController.insights.value.data?.powerRatings.recovery.toDouble() ?? 0.0,
-                        color: Colors.blue,
-                        label: performanceController.insights.value.data?.powerRatings.recovery.toString() ?? "N/A",
-                      ),
-                      SegmentData(
-                        percentage: performanceController.insights.value.data?.powerRatings.wellness.toDouble() ?? 0.0,
-                        color: Colors.amber,
-                        label: performanceController.insights.value.data?.powerRatings.wellness.toString() ?? "N/A",
-                      ),
-                      
-                    ],
-                  ),
+                  child: Obx(() {
+                    return RadialPerformanceChart(
+                      radius: 150,
+                      segments: [
+                        SegmentData(
+                          percentage:
+                              performanceController
+                                  .insights
+                                  .value
+                                  .data
+                                  ?.powerRatings
+                                  .visualization
+                                  .toDouble() ??
+                              0.0,
+                          color: Colors.lightGreen,
+                          label: "Visualization",
+                        ),
+                        SegmentData(
+                          percentage:
+                              performanceController
+                                  .insights
+                                  .value
+                                  .data
+                                  ?.powerRatings
+                                  .consistency
+                                  .toDouble() ??
+                              0.0,
+                          color: Colors.deepPurple,
+                          label: "Consistency",
+                        ),
+                        SegmentData(
+                          percentage:
+                              performanceController
+                                  .insights
+                                  .value
+                                  .data
+                                  ?.powerRatings
+                                  .lifting
+                                  .toDouble() ??
+                              0.0,
+                          color: Colors.red,
+                          label: "Lifting",
+                        ),
+                        SegmentData(
+                          percentage:
+                              performanceController
+                                  .insights
+                                  .value
+                                  .data
+                                  ?.powerRatings
+                                  .recovery
+                                  .toDouble() ??
+                              0.0,
+                          color: Colors.blue,
+                          label: "Recovery",
+                        ),
+                        SegmentData(
+                          percentage:
+                              performanceController
+                                  .insights
+                                  .value
+                                  .data
+                                  ?.powerRatings
+                                  .wellness
+                                  .toDouble() ??
+                              0.0,
+                          color: Colors.amber,
+                          label: "Wellness",
+                        ),
+                      ],
+                    );
+                  }),
                 ),
               ),
 
@@ -72,15 +115,121 @@ class PerformanceScreen extends StatelessWidget {
               Text('Power Ratings', style: AppStyles.bodyMedium),
               SizedBox(height: 10.h), // Spacer
 
-              _buildProgressWidget(Colors.lightGreen, 72, 0.7, 'Visualization'),
+              Obx(() {
+                return _buildProgressWidget(
+                  Colors.lightGreen,
+                  performanceController
+                          .insights
+                          .value
+                          .data
+                          ?.powerRatings
+                          .visualization
+                          .toInt() ??
+                      0,
+
+                  performanceController
+                          .insights
+                          .value
+                          .data
+                          ?.powerRatings
+                          .visualization
+                          .toDouble() ??
+                      0.0,
+                  'Visualization',
+                );
+              }),
               SizedBox(height: 20.h),
-              _buildProgressWidget(Colors.deepPurple, 20, 0.2, 'Consistency'),
+              Obx(() {
+                return _buildProgressWidget(
+                  Colors.deepPurple,
+                  performanceController
+                          .insights
+                          .value
+                          .data
+                          ?.powerRatings
+                          .consistency
+                          .toInt() ??
+                      0,
+                  performanceController
+                          .insights
+                          .value
+                          .data
+                          ?.powerRatings
+                          .consistency
+                          .toDouble() ??
+                      0.0,
+                  'Consistency',
+                );
+              }),
               SizedBox(height: 20.h),
-              _buildProgressWidget(Colors.red, 50, 0.5, 'Lifting'),
+              Obx(() {
+                return _buildProgressWidget(
+                  Colors.red,
+                  performanceController
+                          .insights
+                          .value
+                          .data
+                          ?.powerRatings
+                          .lifting
+                          .toInt() ??
+                      0,
+                  performanceController
+                          .insights
+                          .value
+                          .data
+                          ?.powerRatings
+                          .lifting
+                          .toDouble() ??
+                      0.0,
+                  'Lifting',
+                );
+              }),
               SizedBox(height: 20.h),
-              _buildProgressWidget(Colors.blue, 15, 0.15, 'Recovery'),
+              Obx(() {
+                return _buildProgressWidget(
+                  Colors.blue,
+                  performanceController
+                          .insights
+                          .value
+                          .data
+                          ?.powerRatings
+                          .recovery
+                          .toInt() ??
+                      0,
+                  performanceController
+                          .insights
+                          .value
+                          .data
+                          ?.powerRatings
+                          .recovery
+                          .toDouble() ??
+                      0.0,
+                  'Recovery',
+                );
+              }),
               SizedBox(height: 20.h),
-              _buildProgressWidget(Colors.amber, 15, 0.15, 'Wellness'),
+              Obx(() {
+                return _buildProgressWidget(
+                  Colors.amber,
+                  performanceController
+                          .insights
+                          .value
+                          .data
+                          ?.powerRatings
+                          .wellness
+                          .toInt() ??
+                      0,
+                  performanceController
+                          .insights
+                          .value
+                          .data
+                          ?.powerRatings
+                          .wellness
+                          .toDouble() ??
+                      0.0,
+                  'Wellness',
+                );
+              }),
               SizedBox(height: 20.h),
             ],
           ),
