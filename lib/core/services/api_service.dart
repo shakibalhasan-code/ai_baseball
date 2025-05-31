@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:baseball_ai/core/models/daily_data_model.dart';
+import 'package:baseball_ai/core/models/insights_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
@@ -860,5 +861,55 @@ class ApiService {
     }
   }
 
+  static Future<InsightsResponse> getInsightsData({
+    required String token,
+    required String userId,
+    required String startDate,
+    required String endDate,
+  }) async {
+    try {
+      final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.dailyLogs}/insights');
+      final requestBody = {
+        'userId': userId,
+        'startDate': startDate,
+        'endDate': endDate,
+      };
 
+      final response = await http.post(
+        url,
+        headers: ApiConstants.getAuthHeaders(token),
+        body: jsonEncode(requestBody),
+      );
+
+      final responseData = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return InsightsResponse.fromJson(responseData);
+      } else {
+        return InsightsResponse(
+          success: false,
+          message: responseData['message'] ?? 'Failed to retrieve insights data',
+          data: null,
+        );
+      }
+    } on SocketException {
+      return InsightsResponse(
+        success: false,
+        message: 'No internet connection',
+        data: null,
+      );
+    } on FormatException {
+      return InsightsResponse(
+        success: false,
+        message: 'Invalid response format',
+        data: null,
+      );
+    } catch (e) {
+      return InsightsResponse(
+        success: false,
+        message: 'Failed to retrieve insights data: ${e.toString()}',
+        data: null,
+      );
+    }
+  }
 }

@@ -100,7 +100,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoute.performance,
-      page: () => PerformanceScreen(),
+      page: () => PerformanceScreen(isWeeklyView: true),
       binding: HomeSubBinding(),
       transition: Transition.rightToLeft,
     ),

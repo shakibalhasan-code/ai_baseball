@@ -511,7 +511,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildOverviewSection() {
     return InkWell(
-      onTap: () => Get.to(PerformanceScreen()),
+      onTap: () => Get.to(PerformanceScreen(isWeeklyView: isWeeklyView.value,)),
       child: Container(
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
@@ -538,7 +538,7 @@ class HomeScreen extends StatelessWidget {
                     Obx(() => _buildViewToggle()),
                     const SizedBox(width: 16),
                     InkWell(
-                      onTap: () => Get.to(PerformanceScreen()),
+                      onTap: () => Get.to(PerformanceScreen(isWeeklyView: isWeeklyView.value)),
                       child: const Text(
                         'Details',
                         style: TextStyle(

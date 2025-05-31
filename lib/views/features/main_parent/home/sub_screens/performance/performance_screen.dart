@@ -1,4 +1,5 @@
 import 'package:baseball_ai/core/utils/theme/app_styles.dart'; // Assuming this path is correct
+import 'package:baseball_ai/views/features/main_parent/home/sub_screens/performance/controller/performance_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart'; // Assuming GetX is used for navigation
@@ -6,10 +7,13 @@ import 'package:radial_chart_package/widgets/radial_performance_chart.dart';
 import 'package:radial_chart_package/widgets/segment_data.dart';
 
 class PerformanceScreen extends StatelessWidget {
-  PerformanceScreen({super.key});
+  final bool isWeeklyView;
+  const PerformanceScreen({super.key, required this.isWeeklyView});
 
   @override
   Widget build(BuildContext context) {
+    final performanceController = Get.put(PerformanceController());
+    performanceController.loadPerformanceData(isWeeklyView);
     return Scaffold(
       backgroundColor: AppStyles.backgroundColor,
       appBar: AppBar(
@@ -18,7 +22,7 @@ class PerformanceScreen extends StatelessWidget {
           onPressed: () => Get.back(),
           icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
         ),
-        title: Text('Performance', style: AppStyles.bodyMedium),
+        title: Text('Performance - ${isWeeklyView? "Weekly": "Monthly"}', style: AppStyles.bodyMedium),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -32,41 +36,33 @@ class PerformanceScreen extends StatelessWidget {
                   child: RadialPerformanceChart(
                     radius: 150,
                     segments: [
+                      
                       SegmentData(
-                        percentage: 72,
+                        percentage: performanceController.insights.value.data?.powerRatings.visualization.toDouble() ?? 0.0,
                         color: Colors.lightGreen,
-                        label: "72%",
+                        label: performanceController.insights.value.data?.powerRatings.visualization.toString() ?? "N/A",
                       ),
                       SegmentData(
-                        percentage: 100,
-                        color: Colors.amber,
-                        label: "100%",
+                        percentage: performanceController.insights.value.data?.powerRatings.consistency.toDouble() ?? 0.0,
+                        color: Colors.deepPurple,
+                        label: performanceController.insights.value.data?.powerRatings.consistency.toString() ?? "N/A",
                       ),
                       SegmentData(
-                        percentage: 20,
+                        percentage: performanceController.insights.value.data?.powerRatings.lifting.toDouble() ?? 0.0,
                         color: Colors.red,
-                        label: "100%",
+                        label: performanceController.insights.value.data?.powerRatings.lifting.toString() ?? "N/A",
                       ),
                       SegmentData(
-                        percentage: 60,
+                        percentage: performanceController.insights.value.data?.powerRatings.recovery.toDouble() ?? 0.0,
                         color: Colors.blue,
-                        label: "100%",
+                        label: performanceController.insights.value.data?.powerRatings.recovery.toString() ?? "N/A",
                       ),
                       SegmentData(
-                        percentage: 80,
+                        percentage: performanceController.insights.value.data?.powerRatings.wellness.toDouble() ?? 0.0,
                         color: Colors.amber,
-                        label: "100%",
+                        label: performanceController.insights.value.data?.powerRatings.wellness.toString() ?? "N/A",
                       ),
-                      SegmentData(
-                        percentage: 70,
-                        color: Colors.green,
-                        label: "100%",
-                      ),
-                      SegmentData(
-                        percentage: 64,
-                        color: Colors.amber,
-                        label: "100%",
-                      ),
+                      
                     ],
                   ),
                 ),
@@ -76,13 +72,15 @@ class PerformanceScreen extends StatelessWidget {
               Text('Power Ratings', style: AppStyles.bodyMedium),
               SizedBox(height: 10.h), // Spacer
 
-              _buildProgressWidget(Colors.blueAccent, 72, 0.7, 'Visualization'),
+              _buildProgressWidget(Colors.lightGreen, 72, 0.7, 'Visualization'),
               SizedBox(height: 20.h),
-              _buildProgressWidget(Colors.amberAccent, 20, 0.2, 'Consistency'),
+              _buildProgressWidget(Colors.deepPurple, 20, 0.2, 'Consistency'),
               SizedBox(height: 20.h),
-              _buildProgressWidget(Colors.deepPurpleAccent, 50, 0.5, 'Lifting'),
+              _buildProgressWidget(Colors.red, 50, 0.5, 'Lifting'),
               SizedBox(height: 20.h),
-              _buildProgressWidget(Colors.redAccent, 15, 0.15, 'Recovery'),
+              _buildProgressWidget(Colors.blue, 15, 0.15, 'Recovery'),
+              SizedBox(height: 20.h),
+              _buildProgressWidget(Colors.amber, 15, 0.15, 'Wellness'),
               SizedBox(height: 20.h),
             ],
           ),
