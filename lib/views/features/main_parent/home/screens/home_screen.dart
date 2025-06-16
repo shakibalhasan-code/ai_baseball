@@ -81,20 +81,20 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: CircleAvatar(
-              backgroundColor: cardBackground,
-              child: IconButton(
-                icon: SvgPicture.asset(AppIcons.bell, color: Colors.white),
-                onPressed: () {
-                  Get.to(NotificationScreen());
-                },
-              ),
-            ),
-          ),
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: const EdgeInsets.only(right: 16.0),
+        //     child: CircleAvatar(
+        //       backgroundColor: cardBackground,
+        //       child: IconButton(
+        //         icon: SvgPicture.asset(AppIcons.bell, color: Colors.white),
+        //         onPressed: () {
+        //           Get.to(NotificationScreen());
+        //         },
+        //       ),
+        //     ),
+        //   ),
+        // ],
       ),
       body: SingleChildScrollView(
         child: Padding(

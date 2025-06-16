@@ -19,10 +19,15 @@ class ProgressScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppStyles.backgroundColor,
-      appBar: GlobWidgetHelper.showAppBar(
-        true, // Set to true to show the back button
-        'Post Performance/Game Tracker',
-        false, // Set to false to hide trailing icon
+
+      appBar: AppBar(
+        backgroundColor: AppStyles.cardColor,
+        leading: SizedBox.shrink(),
+        title: Text(
+          'Post Performance/Game Tracker',
+          style: AppStyles.headingTitle,
+        ),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -124,7 +129,8 @@ class ProgressScreen extends StatelessWidget {
               Text(
                 'If you pitched in game today, what were the results of the outing? Type ‘skip’ if you don’t want to submit results.',
                 style: AppStyles.bodySmall.copyWith(fontSize: 14.sp),
-              ),              SizedBox(height: 10.h), // Spacing above text field
+              ),
+              SizedBox(height: 10.h), // Spacing above text field
               TextFormField(
                 style: AppStyles.bodySmall,
                 // Set the text color for input
@@ -158,11 +164,11 @@ class ProgressScreen extends StatelessWidget {
               ),
               SizedBox(height: 20.h), // Spacing between text fields
               Text(
-                   // Primary takeaway section              Text(
+                // Primary takeaway section              Text(
                 'What was your primary takeaway from today?',
                 style: AppStyles.bodySmall.copyWith(fontSize: 14.sp),
               ),
-             
+
               SizedBox(height: 8.h), // Spacing above text field
               TextFormField(
                 style: AppStyles.bodySmall,
@@ -200,22 +206,26 @@ class ProgressScreen extends StatelessWidget {
               // Removed the Spacer() as it's often not effective in SingleChildScrollView
               // const Spacer(),
 
-              // Submit Button     
-                    Padding(padding:EdgeInsets.symmetric(
+              // Submit Button
+              Padding(
+                padding: EdgeInsets.symmetric(
                   horizontal: 0.w,
                   vertical: 20.h,
                 ), // Adjusted vertical padding
-                child: Obx(() => MyTextButton(
-                  isOutline: false,
-                  buttonText: progressController.isSubmitting.value 
-                      ? 'Submitting...' 
-                      : 'Submit',
-                  onTap: progressController.isSubmitting.value
-                      ? () {}
-                      : () => progressController.submitProgress(),
-                )),)
-              
-              
+                child: Obx(
+                  () => MyTextButton(
+                    isOutline: false,
+                    buttonText:
+                        progressController.isSubmitting.value
+                            ? 'Submitting...'
+                            : 'Submit',
+                    onTap:
+                        progressController.isSubmitting.value
+                            ? () {}
+                            : () => progressController.submitProgress(),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
