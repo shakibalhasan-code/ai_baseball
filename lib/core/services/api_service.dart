@@ -16,8 +16,10 @@ import '../models/daily_checkin_model.dart';
 class ApiService {
   static Future<ApiResponse<User>> signup(SignupRequest request) async {
     try {
-      final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.createUser}');
-      
+      final url = Uri.parse(
+        '${ApiConstants.baseUrl}${ApiConstants.createUser}',
+      );
+
       final response = await http.post(
         url,
         headers: ApiConstants.headers,
@@ -58,17 +60,15 @@ class ApiService {
       );
     }
   }
+
   static Future<ApiResponse<LoginResponse>> login({
     required String email,
     required String password,
   }) async {
     try {
       final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.loginUser}');
-      
-      final requestBody = {
-        'email': email,
-        'password': password,
-      };
+
+      final requestBody = {'email': email, 'password': password};
 
       final response = await http.post(
         url,
@@ -110,15 +110,16 @@ class ApiService {
       );
     }
   }
+
   static Future<ApiResponse<ForgotPasswordResponse>> forgotPassword({
     required String email,
   }) async {
     try {
-      final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.forgotPassword}');
-      
-      final requestBody = {
-        'email': email,
-      };
+      final url = Uri.parse(
+        '${ApiConstants.baseUrl}${ApiConstants.forgotPassword}',
+      );
+
+      final requestBody = {'email': email};
 
       final response = await http.post(
         url,
@@ -166,12 +167,11 @@ class ApiService {
     required String oneTimeCode,
   }) async {
     try {
-      final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.verifyEmail}');
-      
-      final requestBody = {
-        'email': email,
-        'oneTimeCode': oneTimeCode,
-      };
+      final url = Uri.parse(
+        '${ApiConstants.baseUrl}${ApiConstants.verifyEmail}',
+      );
+
+      final requestBody = {'email': email, 'oneTimeCode': oneTimeCode};
 
       final response = await http.post(
         url,
@@ -213,23 +213,26 @@ class ApiService {
       );
     }
   }
+
   static Future<ApiResponse<ResetPasswordResponse>> resetPassword({
     required String resetCode,
     required String newPassword,
     required String confirmPassword,
   }) async {
+    print('Reset Code: $resetCode');
     try {
-      final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.resetPassword}');
-      
+      final url = Uri.parse(
+        '${ApiConstants.baseUrl}${ApiConstants.resetPassword}',
+      );
+
       final requestBody = {
-        'resetCode': resetCode,
         'newPassword': newPassword,
         'confirmPassword': confirmPassword,
       };
 
       final response = await http.post(
         url,
-        headers: ApiConstants.headers,
+        headers: ApiConstants.getAuthHeaders(resetCode),
         body: jsonEncode(requestBody),
       );
 
@@ -271,8 +274,10 @@ class ApiService {
   // Profile API methods
   static Future<ApiResponse<User>> getProfile(String token) async {
     try {
-      final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.getProfile}');
-      
+      final url = Uri.parse(
+        '${ApiConstants.baseUrl}${ApiConstants.getProfile}',
+      );
+
       final response = await http.get(
         url,
         headers: ApiConstants.getAuthHeaders(token),
@@ -312,6 +317,7 @@ class ApiService {
       );
     }
   }
+
   static Future<ApiResponse<User>> updateProfile({
     required String token,
     String? name,
@@ -319,33 +325,36 @@ class ApiService {
     File? imageFile,
   }) async {
     try {
-      final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.updateProfile}');
-      
+      final url = Uri.parse(
+        '${ApiConstants.baseUrl}${ApiConstants.updateProfile}',
+      );
+
       var request = http.MultipartRequest('PATCH', url);
       request.headers.addAll(ApiConstants.getFormDataHeaders(token));
-      
+
       // Prepare the data object
       Map<String, dynamic> dataObject = {};
       if (name != null) dataObject['name'] = name;
-      if (birthDate != null) dataObject['birthDate'] = birthDate.toIso8601String();
-      
+      if (birthDate != null)
+        dataObject['birthDate'] = birthDate.toIso8601String();
+
       // Add the data field as JSON string
       if (dataObject.isNotEmpty) {
         request.fields['data'] = jsonEncode(dataObject);
       }
-        // Add image file if provided
+      // Add image file if provided
       if (imageFile != null) {
         // Get MIME type from file extension
         String? mimeType = lookupMimeType(imageFile.path);
-        
+
         // Default to image/jpeg if MIME type cannot be determined
         mimeType ??= 'image/jpeg';
-        
+
         // Split MIME type to get main type and subtype
         final mimeTypeParts = mimeType.split('/');
         final mainType = mimeTypeParts.isNotEmpty ? mimeTypeParts[0] : 'image';
         final subType = mimeTypeParts.length > 1 ? mimeTypeParts[1] : 'jpeg';
-        
+
         var stream = http.ByteStream(imageFile.openRead());
         var length = await imageFile.length();
         var multipartFile = http.MultipartFile(
@@ -357,7 +366,7 @@ class ApiService {
         );
         request.files.add(multipartFile);
       }
-      
+
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
       final responseData = jsonDecode(response.body);
@@ -385,7 +394,8 @@ class ApiService {
         success: false,
         message: 'Invalid response format',
         error: 'Server returned invalid data',
-      );    } catch (e) {
+      );
+    } catch (e) {
       return ApiResponse<User>(
         success: false,
         message: 'Failed to update profile',
@@ -401,12 +411,11 @@ class ApiService {
     required String message,
   }) async {
     try {
-      final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.chatWithBot}');
-      
-      final requestBody = {
-        'userId': userId,
-        'message': message,
-      };
+      final url = Uri.parse(
+        '${ApiConstants.baseUrl}${ApiConstants.chatWithBot}',
+      );
+
+      final requestBody = {'userId': userId, 'message': message};
 
       final response = await http.post(
         url,
@@ -444,7 +453,8 @@ class ApiService {
       return ApiResponse<ChatResponse>(
         success: false,
         message: 'Failed to send message',
-        error: e.toString(),      );
+        error: e.toString(),
+      );
     }
   }
 
@@ -455,7 +465,7 @@ class ApiService {
   }) async {
     try {
       final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.dailyLogs}');
-      
+
       final response = await http.post(
         url,
         headers: ApiConstants.getAuthHeaders(token),
@@ -467,7 +477,8 @@ class ApiService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return DailyLogsResponse(
           success: true,
-          message: responseData['message'] ?? 'Daily logs submitted successfully',
+          message:
+              responseData['message'] ?? 'Daily logs submitted successfully',
           data: responseData['data'],
         );
       } else {
@@ -497,11 +508,11 @@ class ApiService {
   // Daily Logs API methods
   static Future<DailyLogsResponse> submitDailyWellness({
     required String token,
-    required DailyWellnessRequest  request,
+    required DailyWellnessRequest request,
   }) async {
     try {
       final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.dailyLogs}');
-      
+
       final response = await http.post(
         url,
         headers: ApiConstants.getAuthHeaders(token),
@@ -513,7 +524,8 @@ class ApiService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return DailyLogsResponse(
           success: true,
-          message: responseData['message'] ?? 'Daily logs submitted successfully',
+          message:
+              responseData['message'] ?? 'Daily logs submitted successfully',
           data: responseData['data'],
         );
       } else {
@@ -547,7 +559,7 @@ class ApiService {
   }) async {
     try {
       final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.dailyLogs}');
-      
+
       final response = await http.post(
         url,
         headers: ApiConstants.getAuthHeaders(token),
@@ -559,7 +571,8 @@ class ApiService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return DailyLogsResponse(
           success: true,
-          message: responseData['message'] ?? 'Daily logs submitted successfully',
+          message:
+              responseData['message'] ?? 'Daily logs submitted successfully',
           data: responseData['data'],
         );
       } else {
@@ -593,7 +606,7 @@ class ApiService {
   }) async {
     try {
       final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.dailyLogs}');
-      
+
       final response = await http.post(
         url,
         headers: ApiConstants.getAuthHeaders(token),
@@ -605,7 +618,8 @@ class ApiService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return DailyLogsResponse(
           success: true,
-          message: responseData['message'] ?? 'Daily logs submitted successfully',
+          message:
+              responseData['message'] ?? 'Daily logs submitted successfully',
           data: responseData['data'],
         );
       } else {
@@ -638,7 +652,7 @@ class ApiService {
   }) async {
     try {
       final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.dailyLogs}');
-      
+
       final response = await http.post(
         url,
         headers: ApiConstants.getAuthHeaders(token),
@@ -650,7 +664,8 @@ class ApiService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return DailyLogsResponse(
           success: true,
-          message: responseData['message'] ?? 'Daily logs submitted successfully',
+          message:
+              responseData['message'] ?? 'Daily logs submitted successfully',
           data: responseData['data'],
         );
       } else {
@@ -683,7 +698,7 @@ class ApiService {
   }) async {
     try {
       final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.dailyLogs}');
-      
+
       final response = await http.post(
         url,
         headers: ApiConstants.getAuthHeaders(token),
@@ -695,7 +710,8 @@ class ApiService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return DailyLogsResponse(
           success: true,
-          message: responseData['message'] ?? 'Daily logs submitted successfully',
+          message:
+              responseData['message'] ?? 'Daily logs submitted successfully',
           data: responseData['data'],
         );
       } else {
@@ -728,7 +744,7 @@ class ApiService {
   }) async {
     try {
       final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.dailyLogs}');
-      
+
       final response = await http.post(
         url,
         headers: ApiConstants.getAuthHeaders(token),
@@ -740,7 +756,8 @@ class ApiService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return DailyLogsResponse(
           success: true,
-          message: responseData['message'] ?? 'Daily logs submitted successfully',
+          message:
+              responseData['message'] ?? 'Daily logs submitted successfully',
           data: responseData['data'],
         );
       } else {
@@ -773,7 +790,7 @@ class ApiService {
   }) async {
     try {
       final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.dailyLogs}');
-      
+
       final response = await http.post(
         url,
         headers: ApiConstants.getAuthHeaders(token),
@@ -785,7 +802,8 @@ class ApiService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         return DailyLogsResponse(
           success: true,
-          message: responseData['message'] ?? 'Daily logs submitted successfully',
+          message:
+              responseData['message'] ?? 'Daily logs submitted successfully',
           data: responseData['data'],
         );
       } else {
@@ -810,10 +828,8 @@ class ApiService {
         message: 'Failed to submit daily logs',
       );
     }
-  }  
-  
-  
-  
+  }
+
   static Future<DailyLogRetrievalResponse> getDailyData({
     required String token,
     required String userId,
@@ -821,8 +837,10 @@ class ApiService {
   }) async {
     try {
       // Construct URL with proper endpoint format: daily-logs/user/{userId}/date?date={date}
-      final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.dailyLogs}/user/$userId/date?date=$date');
-      
+      final url = Uri.parse(
+        '${ApiConstants.baseUrl}${ApiConstants.dailyLogs}/user/$userId/date?date=$date',
+      );
+
       final response = await http.get(
         url,
         headers: ApiConstants.getAuthHeaders(token),
@@ -836,7 +854,8 @@ class ApiService {
       } else {
         return DailyLogRetrievalResponse(
           success: false,
-          message: responseData['message'] ?? 'Failed to retrieve daily log data',
+          message:
+              responseData['message'] ?? 'Failed to retrieve daily log data',
           data: null, // Set data to null for error cases
         );
       }
@@ -868,7 +887,9 @@ class ApiService {
     required String endDate,
   }) async {
     try {
-      final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.dailyLogs}/insights');
+      final url = Uri.parse(
+        '${ApiConstants.baseUrl}${ApiConstants.dailyLogs}/insights',
+      );
       final requestBody = {
         'userId': userId,
         'startDate': startDate,
@@ -888,7 +909,8 @@ class ApiService {
       } else {
         return InsightsResponse(
           success: false,
-          message: responseData['message'] ?? 'Failed to retrieve insights data',
+          message:
+              responseData['message'] ?? 'Failed to retrieve insights data',
           data: null,
         );
       }

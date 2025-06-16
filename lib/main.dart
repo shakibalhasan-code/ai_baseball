@@ -21,6 +21,8 @@ class MyApp extends StatelessWidget {
       designSize: ScreenUtil.defaultSize,
       builder:
           (context, child) => GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Baseball AI',
             theme: MyThemeData.theme,
             initialRoute: AppRoute.boarding,
             getPages: AppPages.app_pages,

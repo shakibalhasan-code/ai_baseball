@@ -44,9 +44,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               children: [
                 Text('Set your new password', style: AppStyles.bodyMedium),
                 SizedBox(height: 8.h),
-                Text('Enter your new password below', style: AppStyles.bodySmall),
+                Text(
+                  'Enter your new password below',
+                  style: AppStyles.bodySmall,
+                ),
                 SizedBox(height: 20.h),
-                
+
                 // New Password Field
                 TextFormField(
                   controller: authController.newPasswordController,
@@ -78,9 +81,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     return null;
                   },
                 ),
-                
+
                 SizedBox(height: 8.h),
-                
+
                 // Confirm Password Field
                 TextFormField(
                   controller: authController.confirmPasswordController,
@@ -97,7 +100,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       ),
                       onPressed: () {
                         setState(() {
-                          _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                          _isConfirmPasswordVisible =
+                              !_isConfirmPasswordVisible;
                         });
                       },
                     ),
@@ -112,18 +116,24 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     return null;
                   },
                 ),
-                
+
                 SizedBox(height: 20.h),
-                
-                Obx(() => MyTextButton(
-                  buttonText: authController.isResetPasswordLoading.value 
-                      ? 'Resetting...' 
-                      : 'Reset Now',
-                  onTap: authController.isResetPasswordLoading.value
-                      ? () {}
-                      : () => _handleResetPassword(),
-                  isOutline: false,
-                )),
+
+                Obx(
+                  () => MyTextButton(
+                    buttonText:
+                        authController.isResetPasswordLoading.value
+                            ? 'Resetting...'
+                            : 'Reset Now',
+                    onTap:
+                        authController.isResetPasswordLoading.value
+                            ? () {}
+                            : () => _handleResetPassword(
+                              Get.arguments['resetCode'],
+                            ),
+                    isOutline: false,
+                  ),
+                ),
               ],
             ),
           ),
@@ -132,9 +142,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
   }
 
-  void _handleResetPassword() {
+  void _handleResetPassword(String? resetCode) {
+    print('Reset Code: $resetCode');
     if (_formKey.currentState!.validate()) {
       authController.resetPassword(
+        resetCode: resetCode ?? '',
         newPassword: authController.newPasswordController.text.trim(),
         confirmPassword: authController.confirmPasswordController.text.trim(),
       );

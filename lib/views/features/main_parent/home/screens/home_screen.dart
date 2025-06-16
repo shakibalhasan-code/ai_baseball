@@ -29,9 +29,9 @@ class HomeScreen extends StatelessWidget {
   static const Color pillarGritBg = Color(0xFFC62828);
   static const Color chartContainerBackground = Color(0xFF1A1A1A);
   static const Color chartBackground = Colors.transparent;
-  
+
   final authController = Get.find<AuthController>();
-  
+
   // Add observable for view toggle
   final RxBool isWeeklyView = true.obs;
 
@@ -50,9 +50,11 @@ class HomeScreen extends StatelessWidget {
             final user = authController.currentUser.value;
             return CircleAvatar(
               radius: 25,
-              backgroundImage: user?.image != null && user!.image!.isNotEmpty
-                  ? NetworkImage(ImageUtils.getProfileImageUrl(user.image!))
-                  : AssetImage(AppImages.defaultProfileImage) as ImageProvider,
+              backgroundImage:
+                  user?.image != null && user!.image!.isNotEmpty
+                      ? NetworkImage(ImageUtils.getProfileImageUrl(user.image!))
+                      : AssetImage(AppImages.defaultProfileImage)
+                          as ImageProvider,
               onBackgroundImageError: (exception, stackTrace) {
                 print('Failed to load profile image: $exception');
               },
@@ -120,76 +122,92 @@ class HomeScreen extends StatelessWidget {
   // --- Helper Widgets ---
 
   Widget _buildCompletionSection() {
-    return Obx(
-       () {
-        bool wellnessLogResponse = (authController.dailyLogResponse.value.data?.dailyWellnessQuestionnaire?.isBlank ?? true)?
-            false : true;
-        bool throwingJournalResponse = (authController.dailyLogResponse.value.data?.throwingJournal?.isBlank ?? true)?
-            false : true;
-        bool armCareResponse = (authController.dailyLogResponse.value.data?.armCare?.isBlank ?? true)?
-            false : true;
+    return Obx(() {
+      bool wellnessLogResponse =
+          (authController
+                      .dailyLogResponse
+                      .value
+                      .data
+                      ?.dailyWellnessQuestionnaire
+                      ?.isBlank ??
+                  true)
+              ? false
+              : true;
+      bool throwingJournalResponse =
+          (authController
+                      .dailyLogResponse
+                      .value
+                      .data
+                      ?.throwingJournal
+                      ?.isBlank ??
+                  true)
+              ? false
+              : true;
+      bool armCareResponse =
+          (authController.dailyLogResponse.value.data?.armCare?.isBlank ?? true)
+              ? false
+              : true;
 
+      double _percantageCalculation() {
+        int completedTasks = 0;
+        if (wellnessLogResponse) completedTasks++;
+        if (throwingJournalResponse) completedTasks++;
+        if (armCareResponse) completedTasks++;
 
-        double _percantageCalculation() {
-          int completedTasks = 0;
-          if (wellnessLogResponse) completedTasks++;
-          if (throwingJournalResponse) completedTasks++;
-          if (armCareResponse) completedTasks++;
-
-          double percentage = completedTasks / 3; // Total tasks = 3
-          return percentage;
-        }
-        return Container(
-          padding: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            color: cardBackground,
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Today's Completion",
-                      style: TextStyle(
-                        color: textPrimary,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    _buildTaskItem('Wellness Log', wellnessLogResponse),
-                    const SizedBox(height: 8),
-                    _buildTaskItem('Throwing Journal', throwingJournalResponse),
-                    const SizedBox(height: 8),
-                     _buildTaskItem('Arm Care', armCareResponse),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 16),
-              CircularPercentIndicator(
-                radius: 50.0,
-                lineWidth: 10.0,
-                percent: _percantageCalculation(),
-                center:  Text(
-                  '${(_percantageCalculation() * 100).toStringAsFixed(0)}%',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0,
-                    color: textPrimary,
-                  ),
-                ),
-                progressColor: primaryYellow,
-                backgroundColor: Colors.grey.shade700,
-                circularStrokeCap: CircularStrokeCap.round,
-              ),
-            ],
-          ),
-        );
+        double percentage = completedTasks / 3; // Total tasks = 3
+        return percentage;
       }
-    );
+
+      return Container(
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: cardBackground,
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Today's Completion",
+                    style: TextStyle(
+                      color: textPrimary,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  _buildTaskItem('Wellness Log', wellnessLogResponse),
+                  const SizedBox(height: 8),
+                  _buildTaskItem('Throwing Journal', throwingJournalResponse),
+                  const SizedBox(height: 8),
+                  _buildTaskItem('Arm Care', armCareResponse),
+                ],
+              ),
+            ),
+            const SizedBox(width: 16),
+            CircularPercentIndicator(
+              radius: 50.0,
+              lineWidth: 10.0,
+              percent: _percantageCalculation(),
+              center: Text(
+                '${(_percantageCalculation() * 100).toStringAsFixed(0)}%',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
+                  color: textPrimary,
+                ),
+              ),
+              progressColor: primaryYellow,
+              backgroundColor: Colors.grey.shade700,
+              circularStrokeCap: CircularStrokeCap.round,
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   Widget _buildTaskItem(String title, bool completed) {
@@ -275,51 +293,61 @@ class HomeScreen extends StatelessWidget {
         color: cardBackground,
         borderRadius: BorderRadius.circular(12.0),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Core Pillars",
-            style: TextStyle(
-              color: textPrimary,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Core Pillars",
+              style: TextStyle(
+                color: textPrimary,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Obx(
-              () {
-                  return _buildPillarChip(
-                   authController.currentUser.value?.threeWordThtDescribeYou.split(',').first.capitalize ??'Focus',
-                    Icons.track_changes,
-                    pillarFocusBg,
-                  );
-                }
-              ), // Example Icon
-              Obx(
-                () {
-                  return _buildPillarChip(
-                   authController.currentUser.value?.threeWordThtDescribeYou.split(',')[1].capitalize ?? 'Consistency',
-                    Icons.sync_alt,
-                    pillarConsistencyBg,
-                  );
-                }
-              ), // Example Icon
-              Obx(
-                () {
-                  return _buildPillarChip(
-                   authController.currentUser.value?.threeWordThtDescribeYou.split(',')[2].capitalize ?? 'Grit',
-                    Icons.whatshot,
-                    pillarGritBg,
-                  );
-                }
-              ), // Example Icon
-            ],
-          ),
-        ],
+            const SizedBox(height: 16),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                spacing: 4,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Obx(() {
+                    return _buildPillarChip(
+                      authController.currentUser.value?.threeWordThtDescribeYou
+                              .split(',')
+                              .first
+                              .capitalize ??
+                          'Focus',
+                      Icons.track_changes,
+                      pillarFocusBg,
+                    );
+                  }), // Example Icon
+                  Obx(() {
+                    return _buildPillarChip(
+                      authController.currentUser.value?.threeWordThtDescribeYou
+                              .split(',')[1]
+                              .capitalize ??
+                          'Consistency',
+                      Icons.sync_alt,
+                      pillarConsistencyBg,
+                    );
+                  }), // Example Icon
+                  Obx(() {
+                    return _buildPillarChip(
+                      authController.currentUser.value?.threeWordThtDescribeYou
+                              .split(',')[2]
+                              .capitalize ??
+                          'Grit',
+                      Icons.whatshot,
+                      pillarGritBg,
+                    );
+                  }), // Example Icon
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -511,7 +539,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildOverviewSection() {
     return InkWell(
-      onTap: () => Get.to(PerformanceScreen(isWeeklyView: isWeeklyView.value,)),
+      onTap: () => Get.to(PerformanceScreen(isWeeklyView: isWeeklyView.value)),
       child: Container(
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
@@ -524,21 +552,28 @@ class HomeScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Obx(() => Text(
-                  isWeeklyView.value ? "Last 7 Days Overview" : "Last 30 Days Overview",
-                  style: const TextStyle(
-                    color: textPrimary,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                Obx(
+                  () => Text(
+                    isWeeklyView.value
+                        ? "Last 7 Days Overview"
+                        : "Last 30 Days Overview",
+                    style: const TextStyle(
+                      color: textPrimary,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                )),
+                ),
                 Row(
                   children: [
                     // Toggle Switch
                     Obx(() => _buildViewToggle()),
                     const SizedBox(width: 16),
                     InkWell(
-                      onTap: () => Get.to(PerformanceScreen(isWeeklyView: isWeeklyView.value)),
+                      onTap:
+                          () => Get.to(
+                            PerformanceScreen(isWeeklyView: isWeeklyView.value),
+                          ),
                       child: const Text(
                         'Details',
                         style: TextStyle(
@@ -553,31 +588,39 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            Obx(() => Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: _buildChartPreview(
-                    'Hydration',
-                    isWeeklyView.value ? _getWeeklyChartData1() : _getMonthlyChartData1(),
+            Obx(
+              () => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: _buildChartPreview(
+                      'Hydration',
+                      isWeeklyView.value
+                          ? _getWeeklyChartData1()
+                          : _getMonthlyChartData1(),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildChartPreview(
-                    'Soreness',
-                    isWeeklyView.value ? _getWeeklyChartData2() : _getMonthlyChartData2(),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildChartPreview(
+                      'Soreness',
+                      isWeeklyView.value
+                          ? _getWeeklyChartData2()
+                          : _getMonthlyChartData2(),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildChartPreview(
-                    'Bullpen Volume',
-                    isWeeklyView.value ? _getWeeklyChartData3() : _getMonthlyChartData3(),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildChartPreview(
+                      'Bullpen Volume',
+                      isWeeklyView.value
+                          ? _getWeeklyChartData3()
+                          : _getMonthlyChartData3(),
+                    ),
                   ),
-                ),
-              ],
-            )),
+                ],
+              ),
+            ),
           ],
         ),
       ),

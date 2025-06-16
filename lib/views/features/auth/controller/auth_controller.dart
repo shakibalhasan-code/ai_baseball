@@ -9,7 +9,7 @@ import 'package:baseball_ai/core/utils/const/app_route.dart';
 class AuthController extends GetxController {
   // Storage instance
   final GetStorage _storage = GetStorage();
-  
+
   // Loading states
   final RxBool isSignupLoading = false.obs;
   final RxBool isLoginLoading = false.obs;
@@ -17,11 +17,10 @@ class AuthController extends GetxController {
   final RxBool isVerifyEmailLoading = false.obs;
   final RxBool isResetPasswordLoading = false.obs;
 
-
   // User data
   final Rx<User?> currentUser = Rx<User?>(null);
   final RxString accessToken = ''.obs;
-  
+
   // Forgot password flow data
   final RxString forgotPasswordEmail = ''.obs;
   final RxString resetCode = ''.obs;
@@ -30,15 +29,14 @@ class AuthController extends GetxController {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController forgotPasswordEmailController = TextEditingController();
+  final TextEditingController forgotPasswordEmailController =
+      TextEditingController();
   final TextEditingController otpController = TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
-  final Rx<DailyLogRetrievalResponse> dailyLogResponse = DailyLogRetrievalResponse(
-    success: false,
-    message: '',
-    data: null,
-  ).obs;
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+  final Rx<DailyLogRetrievalResponse> dailyLogResponse =
+      DailyLogRetrievalResponse(success: false, message: '', data: null).obs;
 
   @override
   void onClose() {
@@ -57,45 +55,40 @@ class AuthController extends GetxController {
     super.onInit();
     // Initialize storage and load saved token
     _loadSavedToken();
-    
   }
 
-  void loadProgress( ) async{
+  void loadProgress() async {
     String token = accessToken.value;
     print('Loading progress with token: $token');
     String userId = currentUser.value?.id ?? '';
     print('User ID: $userId');
-    String date = DateTime.now().toIso8601String(); 
+    String date = DateTime.now().toIso8601String();
     print('Date: $date');
     try {
-
-      ApiService.getDailyData(
-        token: token,
-        userId: userId,
-        date: date,
-      ).then((response) {
-        if (response.success && response.data != null) {
-          dailyLogResponse.value = response;
-          print('Daily Data Loaded: ${response.data}');
-          // You can update your UI or state here with the loaded data
-        } else {
-          print('Failed to load daily data: ${response.message}');
-          dailyLogResponse.value = DailyLogRetrievalResponse(
-            success: false,
-            message: response.message,
-            data: null,
-          );
-        }
-      }).catchError((error) {
-        Get.snackbar(
-          'Error',
-          'Failed to load progress: ${error.toString()}',
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.TOP,
-        );
-      });
-      
+      ApiService.getDailyData(token: token, userId: userId, date: date)
+          .then((response) {
+            if (response.success && response.data != null) {
+              dailyLogResponse.value = response;
+              print('Daily Data Loaded: ${response.data}');
+              // You can update your UI or state here with the loaded data
+            } else {
+              print('Failed to load daily data: ${response.message}');
+              dailyLogResponse.value = DailyLogRetrievalResponse(
+                success: false,
+                message: response.message,
+                data: null,
+              );
+            }
+          })
+          .catchError((error) {
+            Get.snackbar(
+              'Error',
+              'Failed to load progress: ${error.toString()}',
+              backgroundColor: Colors.red,
+              colorText: Colors.white,
+              snackPosition: SnackPosition.TOP,
+            );
+          });
     } catch (e) {
       Get.snackbar(
         'Error',
@@ -104,12 +97,8 @@ class AuthController extends GetxController {
         colorText: Colors.white,
         snackPosition: SnackPosition.TOP,
       );
-      
     }
-
-
   }
-
 
   // Token storage methods
   void _saveToken(String token) {
@@ -120,7 +109,6 @@ class AuthController extends GetxController {
   void _loadSavedToken() {
     final savedToken = _storage.read('access_token');
     if (savedToken != null) {
-
       accessToken.value = savedToken;
       print('Access Token Loaded: $savedToken');
       // If we have a saved token, fetch the user profile
@@ -166,7 +154,7 @@ class AuthController extends GetxController {
 
       if (response.success && response.data != null) {
         currentUser.value = response.data;
-        
+
         // Show success message
         Get.snackbar(
           'Success',
@@ -179,7 +167,6 @@ class AuthController extends GetxController {
         // Navigate to the next screen (e.g., OTP verification or home)
         // You can customize this based on your app flow
         Get.offAllNamed(AppRoute.main);
-        
       } else {
         // Show error message
         Get.snackbar(
@@ -204,25 +191,19 @@ class AuthController extends GetxController {
   }
 
   /// Login method
-  Future<void> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<void> login({required String email, required String password}) async {
     try {
       isLoginLoading.value = true;
 
-      final response = await ApiService.login(
-        email: email,
-        password: password,
-      );
+      final response = await ApiService.login(email: email, password: password);
 
       if (response.success && response.data != null) {
         currentUser.value = response.data!.user;
-        
+
         // Store access token securely
         _saveToken(response.data!.accessToken);
         print('Access Token Saved: ${response.data!.accessToken}');
-        
+
         // Show success message
         Get.snackbar(
           'Success',
@@ -234,7 +215,6 @@ class AuthController extends GetxController {
 
         // Navigate to home screen
         Get.offAllNamed(AppRoute.main);
-        
       } else {
         // Show error message
         Get.snackbar(
@@ -259,16 +239,12 @@ class AuthController extends GetxController {
   }
 
   /// Forgot Password method
-  Future<void> forgotPassword({
-    required String email,
-  }) async {
+  Future<void> forgotPassword({required String email}) async {
     try {
       isForgotPasswordLoading.value = true;
       forgotPasswordEmail.value = email;
 
-      final response = await ApiService.forgotPassword(
-        email: email,
-      );
+      final response = await ApiService.forgotPassword(email: email);
 
       if (response.success) {
         // Show success message
@@ -282,7 +258,6 @@ class AuthController extends GetxController {
 
         // Navigate to OTP verification screen
         Get.toNamed(AppRoute.otp);
-        
       } else {
         // Show error message
         Get.snackbar(
@@ -321,7 +296,8 @@ class AuthController extends GetxController {
 
       if (response.success && response.data?.resetCode != null) {
         resetCode.value = response.data!.resetCode!;
-        
+        print('Reset Code: ${resetCode.value}');
+
         // Show success message
         Get.snackbar(
           'Success',
@@ -332,8 +308,10 @@ class AuthController extends GetxController {
         );
 
         // Navigate to reset password screen
-        Get.toNamed(AppRoute.passSet);
-        
+        Get.toNamed(
+          AppRoute.passSet,
+          arguments: {'resetCode': resetCode.value},
+        );
       } else {
         // Show error message
         Get.snackbar(
@@ -359,6 +337,7 @@ class AuthController extends GetxController {
 
   /// Reset password method
   Future<void> resetPassword({
+    required String resetCode,
     required String newPassword,
     required String confirmPassword,
   }) async {
@@ -366,7 +345,7 @@ class AuthController extends GetxController {
       isResetPasswordLoading.value = true;
 
       final response = await ApiService.resetPassword(
-        resetCode: resetCode.value,
+        resetCode: resetCode,
         newPassword: newPassword,
         confirmPassword: confirmPassword,
       );
@@ -383,7 +362,6 @@ class AuthController extends GetxController {
 
         // Navigate to login screen
         Get.offAllNamed(AppRoute.signIn);
-        
       } else {
         // Show error message
         Get.snackbar(
