@@ -1,4 +1,5 @@
-import 'package:baseball_ai/core/models/chart_data.dart';
+// TODO: Re-add these imports when hydration, soreness, and bullpen data is available
+// import 'package:baseball_ai/core/models/chart_data.dart';
 import 'package:baseball_ai/core/utils/const/app_icons.dart';
 import 'package:baseball_ai/core/utils/const/app_images.dart';
 import 'package:baseball_ai/core/utils/const/app_route.dart';
@@ -10,7 +11,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+// TODO: Re-add this import when hydration, soreness, and bullpen data is available
+// import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:baseball_ai/core/utils/image_utils.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -111,6 +113,8 @@ class HomeScreen extends StatelessWidget {
               _buildQuickAccessButtons(),
               const SizedBox(height: 24),
               _buildOverviewSection(),
+              // const SizedBox(height: 24),
+              // _buildPerformancePreview(),
               const SizedBox(height: 24),
             ],
           ),
@@ -568,58 +572,66 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     // Toggle Switch
                     Obx(() => _buildViewToggle()),
-                    const SizedBox(width: 16),
-                    InkWell(
-                      onTap:
-                          () => Get.to(
-                            PerformanceScreen(isWeeklyView: isWeeklyView.value),
-                          ),
-                      child: const Text(
-                        'Details',
-                        style: TextStyle(
-                          color: primaryYellow,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
+                    // const SizedBox(width: 16),
+                    // InkWell(
+                    //   onTap:
+                    //       () => Get.to(
+                    //         PerformanceScreen(isWeeklyView: isWeeklyView.value),
+                    //       ),
+                    //   child: const Text(
+                    //     'Details',
+                    //     style: TextStyle(
+                    //       color: primaryYellow,
+                    //       fontSize: 14,
+                    //       fontWeight: FontWeight.w500,
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            Obx(
-              () => Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: _buildChartPreview(
-                      'Hydration',
-                      isWeeklyView.value
-                          ? _getWeeklyChartData1()
-                          : _getMonthlyChartData1(),
-                    ),
+            // TODO: Hydration, Soreness, and Bullpen Volume data not available yet
+            // Obx(
+            //   () => Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       Expanded(
+            //         child: _buildChartPreview(
+            //           'Hydration',
+            //           isWeeklyView.value
+            //               ? _getWeeklyChartData1()
+            //               : _getMonthlyChartData1(),
+            //         ),
+            //       ),
+            //       const SizedBox(width: 12),
+            //       Expanded(
+            //         child: _buildChartPreview(
+            //           'Soreness',
+            //           isWeeklyView.value
+            //               ? _getWeeklyChartData2()
+            //               : _getMonthlyChartData2(),
+            //         ),
+            //       ),
+            //       const SizedBox(width: 12),
+            //       Expanded(
+            //         child: _buildChartPreview(
+            //           'Bullpen Volume',
+            //           isWeeklyView.value
+            //               ? _getWeeklyChartData3()
+            //               : _getMonthlyChartData3(),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            InkWell(
+              onTap:
+                  () => Get.to(
+                    PerformanceScreen(isWeeklyView: isWeeklyView.value),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildChartPreview(
-                      'Soreness',
-                      isWeeklyView.value
-                          ? _getWeeklyChartData2()
-                          : _getMonthlyChartData2(),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildChartPreview(
-                      'Bullpen Volume',
-                      isWeeklyView.value
-                          ? _getWeeklyChartData3()
-                          : _getMonthlyChartData3(),
-                    ),
-                  ),
-                ],
-              ),
+              child: _buildPerformancePreview(),
             ),
           ],
         ),
@@ -676,7 +688,8 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-
+  // TODO: Remove unused chart methods when hydration, soreness, and bullpen data is available
+  /*
   Widget _buildChartPreview(String title, List<ChartData> data) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -802,5 +815,165 @@ class HomeScreen extends StatelessWidget {
       ChartData(25, 50),
       ChartData(30, 60),
     ];
+  }
+  */
+
+  Widget _buildPerformancePreview() {
+    return Container(
+      padding: const EdgeInsets.all(20.0),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [chartContainerBackground, cardBackground.withOpacity(0.8)],
+        ),
+        borderRadius: BorderRadius.circular(16.0),
+        border: Border.all(color: primaryYellow.withOpacity(0.2), width: 1),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: primaryYellow.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.analytics_outlined,
+                  color: primaryYellow,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Performance Analytics',
+                      style: TextStyle(
+                        color: textPrimary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'View detailed insights and trends',
+                      style: TextStyle(color: textSecondary, fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: primaryYellow,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'View All',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.black,
+                      size: 12,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          // Row(
+          //   children: [
+          //     Expanded(
+          //       child: _buildPerformanceMetric(
+          //         'Training Progress',
+          //         '85%',
+          //         Icons.trending_up,
+          //         Colors.green,
+          //       ),
+          //     ),
+          //     const SizedBox(width: 16),
+          //     Expanded(
+          //       child: _buildPerformanceMetric(
+          //         'Weekly Goals',
+          //         '12/15',
+          //         Icons.track_changes,
+          //         primaryYellow,
+          //       ),
+          //     ),
+          //     const SizedBox(width: 16),
+          //     Expanded(
+          //       child: _buildPerformanceMetric(
+          //         'Consistency',
+          //         '7 days',
+          //         Icons.calendar_today,
+          //         Colors.blue,
+          //       ),
+          //     ),
+          //   ],
+          // ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPerformanceMetric(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: cardBackground.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withOpacity(0.3), width: 1),
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: color, size: 20),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            value,
+            style: TextStyle(
+              color: textPrimary,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            title,
+            style: TextStyle(color: textSecondary, fontSize: 12),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
   }
 }
