@@ -1,5 +1,7 @@
+import 'package:baseball_ai/core/utils/image_utils.dart';
 import 'package:baseball_ai/core/utils/theme/app_styles.dart'; // Assuming this path is correct
 import 'package:baseball_ai/views/features/main_parent/home/sub_screens/performance/controller/performance_controller.dart';
+import 'package:baseball_ai/views/features/main_parent/profile/controller/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart'; // Assuming GetX is used for navigation
@@ -13,6 +15,7 @@ class PerformanceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final performanceController = Get.put(PerformanceController());
+    final profileController = Get.find<ProfileController>();
     performanceController.loadPerformanceData(isWeeklyView);
     return Scaffold(
       backgroundColor: AppStyles.backgroundColor,
@@ -34,7 +37,52 @@ class PerformanceScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // User Profile Section
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 30.r,
+                    backgroundImage: NetworkImage(
+                      ImageUtils.getProfileImageUrl(
+                        profileController
+                            .authController
+                            .currentUser
+                            .value
+                            ?.image,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10.w),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        profileController
+                                .authController
+                                .currentUser
+                                .value
+                                ?.name ??
+                            'User',
+                        style: AppStyles.bodyMedium.copyWith(fontSize: 18.sp),
+                      ),
+                      Text(
+                        profileController
+                                .authController
+                                .currentUser
+                                .value
+                                ?.email ??
+                            '',
+                        style: AppStyles.bodySmall.copyWith(
+                          color: Colors.white70,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
               SizedBox(
+                height: 120,
+                width: 120,
                 child: Center(
                   child: Obx(() {
                     return RadialPerformanceChart(
@@ -113,123 +161,124 @@ class PerformanceScreen extends StatelessWidget {
 
               SizedBox(height: 20.h), // Spacer
               Text('Power Ratings', style: AppStyles.bodyMedium),
-              SizedBox(height: 10.h), // Spacer
-
-              Obx(() {
-                return _buildProgressWidget(
-                  Colors.lightGreen,
-                  performanceController
-                          .insights
-                          .value
-                          .data
-                          ?.powerRatings
-                          .visualization
-                          .toInt() ??
-                      0,
-
-                  performanceController
-                          .insights
-                          .value
-                          .data
-                          ?.powerRatings
-                          .visualization
-                          .toDouble() ??
-                      0.0,
-                  'Visualization',
-                );
-              }),
-              SizedBox(height: 20.h),
-              Obx(() {
-                return _buildProgressWidget(
-                  Colors.deepPurple,
-                  performanceController
-                          .insights
-                          .value
-                          .data
-                          ?.powerRatings
-                          .consistency
-                          .toInt() ??
-                      0,
-                  performanceController
-                          .insights
-                          .value
-                          .data
-                          ?.powerRatings
-                          .consistency
-                          .toDouble() ??
-                      0.0,
-                  'Consistency',
-                );
-              }),
-              SizedBox(height: 20.h),
-              Obx(() {
-                return _buildProgressWidget(
-                  Colors.red,
-                  performanceController
-                          .insights
-                          .value
-                          .data
-                          ?.powerRatings
-                          .lifting
-                          .toInt() ??
-                      0,
-                  performanceController
-                          .insights
-                          .value
-                          .data
-                          ?.powerRatings
-                          .lifting
-                          .toDouble() ??
-                      0.0,
-                  'Lifting',
-                );
-              }),
-              SizedBox(height: 20.h),
-              Obx(() {
-                return _buildProgressWidget(
-                  Colors.blue,
-                  performanceController
-                          .insights
-                          .value
-                          .data
-                          ?.powerRatings
-                          .recovery
-                          .toInt() ??
-                      0,
-                  performanceController
-                          .insights
-                          .value
-                          .data
-                          ?.powerRatings
-                          .recovery
-                          .toDouble() ??
-                      0.0,
-                  'Recovery',
-                );
-              }),
-              SizedBox(height: 20.h),
-              Obx(() {
-                return _buildProgressWidget(
-                  Colors.amber,
-                  performanceController
-                          .insights
-                          .value
-                          .data
-                          ?.powerRatings
-                          .wellness
-                          .toInt() ??
-                      0,
-                  performanceController
-                          .insights
-                          .value
-                          .data
-                          ?.powerRatings
-                          .wellness
-                          .toDouble() ??
-                      0.0,
-                  'Wellness',
-                );
-              }),
+              SizedBox(height: 20.h), // Spacer
+              // Vertical Bar Chart
+              Container(
+                height: 250.h,
+                padding: EdgeInsets.all(16.w),
+                decoration: BoxDecoration(
+                  color: AppStyles.cardColor,
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Obx(() {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      _buildVerticalBar(
+                        'VIS',
+                        performanceController
+                                .insights
+                                .value
+                                .data
+                                ?.powerRatings
+                                .visualization
+                                .toInt() ??
+                            0,
+                        performanceController
+                                .insights
+                                .value
+                                .data
+                                ?.powerRatings
+                                .visualization
+                                .toDouble() ??
+                            0.0,
+                        Colors.lightGreen,
+                      ),
+                      _buildVerticalBar(
+                        'CON',
+                        performanceController
+                                .insights
+                                .value
+                                .data
+                                ?.powerRatings
+                                .consistency
+                                .toInt() ??
+                            0,
+                        performanceController
+                                .insights
+                                .value
+                                .data
+                                ?.powerRatings
+                                .consistency
+                                .toDouble() ??
+                            0.0,
+                        Colors.deepPurple,
+                      ),
+                      _buildVerticalBar(
+                        'LIFT',
+                        performanceController
+                                .insights
+                                .value
+                                .data
+                                ?.powerRatings
+                                .lifting
+                                .toInt() ??
+                            0,
+                        performanceController
+                                .insights
+                                .value
+                                .data
+                                ?.powerRatings
+                                .lifting
+                                .toDouble() ??
+                            0.0,
+                        Colors.red,
+                      ),
+                      _buildVerticalBar(
+                        'REC',
+                        performanceController
+                                .insights
+                                .value
+                                .data
+                                ?.powerRatings
+                                .recovery
+                                .toInt() ??
+                            0,
+                        performanceController
+                                .insights
+                                .value
+                                .data
+                                ?.powerRatings
+                                .recovery
+                                .toDouble() ??
+                            0.0,
+                        Colors.blue,
+                      ),
+                      _buildVerticalBar(
+                        'WELL',
+                        performanceController
+                                .insights
+                                .value
+                                .data
+                                ?.powerRatings
+                                .wellness
+                                .toInt() ??
+                            0,
+                        performanceController
+                                .insights
+                                .value
+                                .data
+                                ?.powerRatings
+                                .wellness
+                                .toDouble() ??
+                            0.0,
+                        Colors.amber,
+                      ),
+                    ],
+                  );
+                }),
+              ),
               SizedBox(height: 20.h),
             ],
           ),
@@ -238,47 +287,78 @@ class PerformanceScreen extends StatelessWidget {
     );
   }
 
-  Row _buildProgressWidget(
-    Color color,
-    int labelInt,
-    double value,
+  Widget _buildVerticalBar(
     String label,
+    int value,
+    double percentage,
+    Color color,
   ) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+    const double maxHeight = 200.0;
+    final double barHeight = (percentage / 100) * maxHeight;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Expanded(
-          flex: 3,
+        // Value label on top
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(12.r),
+          ),
           child: Text(
-            '$labelInt',
-            style: AppStyles.headingLarge.copyWith(
+            '$value',
+            style: AppStyles.bodyMedium.copyWith(
               color: Colors.white,
-              fontSize: 40.sp,
+              fontSize: 14.sp,
+              fontWeight: FontWeight.bold,
             ),
-            maxLines: 1,
           ),
         ),
-        SizedBox(width: 10.w),
-        Expanded(
-          flex: 10,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: AppStyles.bodyMedium.copyWith(fontSize: 12.sp),
-              ),
-              SizedBox(height: 5.h),
-              LinearProgressIndicator(
-                minHeight: 10.h,
+        SizedBox(height: 8.h),
 
-                value: value,
-                backgroundColor: AppStyles.cardColor,
-                borderRadius: BorderRadius.circular(10.r),
-                color: color,
+        // Vertical bar
+        Container(
+          width: 40.w,
+          height: maxHeight,
+          decoration: BoxDecoration(
+            color: AppStyles.backgroundColor,
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 800),
+              width: 40.w,
+              height: barHeight,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [color, color.withOpacity(0.7)],
+                ),
+                borderRadius: BorderRadius.circular(8.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: color.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: Offset(0, 2),
+                  ),
+                ],
               ),
-            ],
+            ),
+          ),
+        ),
+
+        SizedBox(height: 12.h),
+
+        // Label at bottom
+        Text(
+          label,
+          style: AppStyles.bodyMedium.copyWith(
+            color: Colors.white70,
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],
