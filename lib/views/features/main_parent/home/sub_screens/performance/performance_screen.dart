@@ -250,7 +250,6 @@ class PerformanceScreen extends StatelessWidget {
         Expanded(
           flex: 3,
           child: Text(
-            
             '$labelInt',
             style: AppStyles.headingLarge.copyWith(
               color: Colors.white,
