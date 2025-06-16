@@ -136,9 +136,9 @@ class PerformanceScreen extends StatelessWidget {
                                                 .authController
                                                 .currentUser
                                                 .value
-                                                ?.playerType
-                                                .toString() ??
-                                            'Player',
+                                                ?.status
+                                                .toUpperCase() ??
+                                            'N/A',
                                         style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 12.sp,
@@ -460,20 +460,28 @@ class PerformanceScreen extends StatelessWidget {
           children: [
             Expanded(child: _buildStatItem('OVERALL', 'N/A', Colors.amber)),
             SizedBox(width: 20.w),
-            Expanded(child: _buildStatItem('BATS', 'L', Colors.blue)),
+            Expanded(
+              child: _buildStatItem(
+                'TYPE',
+                profileController.authController.currentUser.value?.playerType
+                        .toString() ??
+                    'N/A',
+                Colors.blue,
+              ),
+            ),
           ],
         ),
 
-        SizedBox(height: 8.h),
+        SizedBox(height: 42.h),
 
-        // Second row of stats
-        Row(
-          children: [
-            Expanded(child: _buildStatItem('HEIGHT', '6\'3"', Colors.blue)),
-            SizedBox(width: 20.w),
-            Expanded(child: _buildStatItem('AGE', '26', Colors.blue)),
-          ],
-        ),
+        // // Second row of stats
+        // Row(
+        //   children: [
+        //     Expanded(child: _buildStatItem('HEIGHT', '6\'3"', Colors.blue)),
+        //     SizedBox(width: 20.w),
+        //     Expanded(child: _buildStatItem('AGE', '26', Colors.blue)),
+        //   ],
+        // ),
       ],
     );
   }
