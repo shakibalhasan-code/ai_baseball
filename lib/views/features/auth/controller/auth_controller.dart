@@ -403,6 +403,7 @@ class AuthController extends GetxController {
 
       if (response.success && response.data != null) {
         currentUser.value = response.data;
+        loadProgress();
       } else {
         Get.snackbar(
           'Error',
