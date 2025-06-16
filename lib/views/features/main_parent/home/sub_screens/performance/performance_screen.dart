@@ -132,10 +132,16 @@ class PerformanceScreen extends StatelessWidget {
                                         ),
                                       ),
                                       child: Text(
-                                        '99',
+                                        profileController
+                                                .authController
+                                                .currentUser
+                                                .value
+                                                ?.playerType
+                                                .toString() ??
+                                            'Player',
                                         style: TextStyle(
                                           color: Colors.black,
-                                          fontSize: 16.sp,
+                                          fontSize: 12.sp,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -147,7 +153,7 @@ class PerformanceScreen extends StatelessWidget {
                               SizedBox(height: 16.h),
 
                               // Stats Grid
-                              _buildStatsGrid(),
+                              _buildStatsGrid(profileController),
                             ],
                           ),
                         ),
@@ -281,7 +287,7 @@ class PerformanceScreen extends StatelessWidget {
                                           .visualization
                                           .toDouble() ??
                                       0.0,
-                                  Colors.amber,
+                                  Colors.lightGreen,
                                 ),
                                 _buildVerticalBar(
                                   'CON',
@@ -301,7 +307,7 @@ class PerformanceScreen extends StatelessWidget {
                                           .consistency
                                           .toDouble() ??
                                       0.0,
-                                  Colors.amber,
+                                  Colors.deepPurple,
                                 ),
                                 _buildVerticalBar(
                                   'LIFT',
@@ -321,7 +327,7 @@ class PerformanceScreen extends StatelessWidget {
                                           .lifting
                                           .toDouble() ??
                                       0.0,
-                                  Colors.green,
+                                  Colors.red,
                                 ),
                                 _buildVerticalBar(
                                   'REC',
@@ -341,7 +347,7 @@ class PerformanceScreen extends StatelessWidget {
                                           .recovery
                                           .toDouble() ??
                                       0.0,
-                                  Colors.green,
+                                  Colors.blue,
                                 ),
                                 _buildVerticalBar(
                                   'WELL',
@@ -361,7 +367,7 @@ class PerformanceScreen extends StatelessWidget {
                                           .wellness
                                           .toDouble() ??
                                       0.0,
-                                  Colors.blue,
+                                  Colors.amber,
                                 ),
                               ],
                             ),
@@ -446,13 +452,13 @@ class PerformanceScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatsGrid() {
+  Widget _buildStatsGrid(ProfileController profileController) {
     return Column(
       children: [
         // First row of stats
         Row(
           children: [
-            Expanded(child: _buildStatItem('OVERALL', '99', Colors.amber)),
+            Expanded(child: _buildStatItem('OVERALL', 'N/A', Colors.amber)),
             SizedBox(width: 20.w),
             Expanded(child: _buildStatItem('BATS', 'L', Colors.blue)),
           ],
