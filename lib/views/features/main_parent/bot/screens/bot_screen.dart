@@ -36,7 +36,8 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
 
   @override
   void dispose() {
-    chatController.dispose(); // Dispose the controller when the widget is removed
+    chatController
+        .dispose(); // Dispose the controller when the widget is removed
     super.dispose();
   }
 
@@ -65,31 +66,31 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
           ),
         ),
         centerTitle: true, // Center the title
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(
-              right: 8.0,
-            ), // Adjust padding slightly
-            child: CircleAvatar(
-              radius: 18,
-              backgroundColor: inputBackground, // Use input bg for consistency
-              child: IconButton(
-                icon: const Icon(
-                  Icons.notifications_none_outlined,
-                  color: textPrimary,
-                  size: 22,
-                ),
-                onPressed: () {
-                  // Handle notification tap
-                  Get.to(NotificationScreen());
-                },
-                tooltip: 'Notifications', // Add tooltip for accessibility
-                padding: EdgeInsets.zero, // Remove default padding
-                constraints: const BoxConstraints(), // Remove constraints
-              ),
-            ),
-          ),
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: const EdgeInsets.only(
+        //       right: 8.0,
+        //     ), // Adjust padding slightly
+        //     child: CircleAvatar(
+        //       radius: 18,
+        //       backgroundColor: inputBackground, // Use input bg for consistency
+        //       child: IconButton(
+        //         icon: const Icon(
+        //           Icons.notifications_none_outlined,
+        //           color: textPrimary,
+        //           size: 22,
+        //         ),
+        //         onPressed: () {
+        //           // Handle notification tap
+        //           Get.to(NotificationScreen());
+        //         },
+        //         tooltip: 'Notifications', // Add tooltip for accessibility
+        //         padding: EdgeInsets.zero, // Remove default padding
+        //         constraints: const BoxConstraints(), // Remove constraints
+        //       ),
+        //     ),
+        //   ),
+        // ],
       ),
       body: Column(
         children: [
@@ -141,10 +142,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
             const Text(
               '"What\'s up Simi! What do you got today?"',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: textSecondary,
-                fontSize: 16,
-              ),
+              style: TextStyle(color: textSecondary, fontSize: 16),
             ),
           ],
         ),
@@ -197,8 +195,10 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
               decoration: BoxDecoration(
                 color: message.isUser ? primaryYellow : inputBackground,
                 borderRadius: BorderRadius.circular(16.r).copyWith(
-                  bottomLeft: message.isUser ? Radius.circular(16.r) : Radius.zero,
-                  bottomRight: message.isUser ? Radius.zero : Radius.circular(16.r),
+                  bottomLeft:
+                      message.isUser ? Radius.circular(16.r) : Radius.zero,
+                  bottomRight:
+                      message.isUser ? Radius.zero : Radius.circular(16.r),
                 ),
               ),
               child: Text(
@@ -216,11 +216,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
             CircleAvatar(
               radius: 16.r,
               backgroundColor: inputBackground,
-              child: Icon(
-                Icons.person,
-                color: textPrimary,
-                size: 18.sp,
-              ),
+              child: Icon(Icons.person, color: textPrimary, size: 18.sp),
             ),
           ],
         ],
@@ -257,15 +253,16 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                 vertical: 10.h,
               ),
               hintText: 'Message with coach PJ...',
-              hintStyle: AppStyles.bodySmall.copyWith(
-                color: Colors.white,
-              ),
-              suffixIcon: Obx(() => IconButton(
-                    onPressed: chatController.isSending.value
-                        ? null
-                        : chatController.sendMessage,
-                    icon: chatController.isSending.value
-                        ? SizedBox(
+              hintStyle: AppStyles.bodySmall.copyWith(color: Colors.white),
+              suffixIcon: Obx(
+                () => IconButton(
+                  onPressed:
+                      chatController.isSending.value
+                          ? null
+                          : chatController.sendMessage,
+                  icon:
+                      chatController.isSending.value
+                          ? SizedBox(
                             width: 20.w,
                             height: 20.h,
                             child: CircularProgressIndicator(
@@ -275,11 +272,12 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                               ),
                             ),
                           )
-                        : SvgPicture.asset(
+                          : SvgPicture.asset(
                             AppIcons.send,
                             color: Colors.white,
                           ),
-                  )),
+                ),
+              ),
               focusedBorder: InputBorder.none,
               errorBorder: InputBorder.none,
               disabledBorder: InputBorder.none,
