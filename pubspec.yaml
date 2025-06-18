@@ -19,10 +19,11 @@ dependencies:
   syncfusion_flutter_charts: ^29.1.38
   image_picker: ^1.1.2
   radial_chart_package: ^0.0.1
-  flutter_otp_text_field: ^1.5.1+1
+  flutter_otp_text_field: ^1.5.1+1  
   http: ^1.2.2
   http_parser: ^4.1.2
   mime: ^2.0.0
+  url_launcher: ^6.2.4
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,6 @@
 import 'package:baseball_ai/core/utils/const/app_icons.dart';
 import 'package:baseball_ai/core/utils/theme/app_styles.dart';
-import 'package:baseball_ai/views/features/main_parent/home/sub_screens/notification_screen.dart';
+// import 'package:baseball_ai/views/features/main_parent/home/sub_screens/notification_screen.dart';
 import 'package:baseball_ai/views/features/main_parent/bot/controller/chat_controller.dart';
 import 'package:baseball_ai/core/models/chat_model.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChatBotScreen extends StatefulWidget {
   const ChatBotScreen({super.key});
@@ -187,8 +188,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
               ),
             ),
             SizedBox(width: 8.w),
-          ],
-          // Message bubble
+          ], // Message bubble
           Flexible(
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
@@ -201,12 +201,22 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                       message.isUser ? Radius.zero : Radius.circular(16.r),
                 ),
               ),
-              child: Text(
-                message.message,
-                style: TextStyle(
-                  color: message.isUser ? Colors.black : textPrimary,
-                  fontSize: 14.sp,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    message.message,
+                    style: TextStyle(
+                      color: message.isUser ? Colors.black : textPrimary,
+                      fontSize: 14.sp,
+                    ),
+                  ),
+                  // Show download button if message contains a link
+                  if (_containsLink(message.message) && !message.isUser) ...[
+                    SizedBox(height: 8.h),
+                    _buildLinkButton(_extractLink(message.message)),
+                  ],
+                ],
               ),
             ),
           ),
@@ -287,5 +297,74 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
         ),
       ),
     );
+  }
+
+  // Helper method to check if message contains a link
+  bool _containsLink(String message) {
+    final urlRegExp = RegExp(r'https?://[^\s]+', caseSensitive: false);
+    return urlRegExp.hasMatch(message);
+  }
+
+  // Helper method to extract the first link from message
+  String _extractLink(String message) {
+    final urlRegExp = RegExp(r'https?://[^\s]+', caseSensitive: false);
+    final match = urlRegExp.firstMatch(message);
+    return match?.group(0) ?? '';
+  }
+
+  // Widget to build the link button
+  Widget _buildLinkButton(String url) {
+    return Container(
+      margin: EdgeInsets.only(top: 4.h),
+      child: ElevatedButton.icon(
+        onPressed: () => _openLink(url),
+        icon: Icon(Icons.download, size: 16.sp, color: Colors.black),
+        label: Text(
+          'Visit Link',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primaryYellow,
+          foregroundColor: Colors.black,
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+          minimumSize: Size(0, 32.h),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.r),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Method to open/launch the link
+  Future<void> _openLink(String url) async {
+    try {
+      final Uri uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        // Show error message if link can't be opened
+        Get.snackbar(
+          'Error',
+          'Could not open the link',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      // Show error message if there's an exception
+      Get.snackbar(
+        'Error',
+        'Invalid link format',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 }
