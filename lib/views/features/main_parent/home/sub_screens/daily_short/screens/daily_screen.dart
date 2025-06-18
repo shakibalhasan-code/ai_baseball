@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../../../auth/controller/auth_controller.dart';
 import '../../notification_screen.dart';
 import '../controller/daily_short_controller.dart';
 
@@ -59,161 +60,187 @@ class DailyShortScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Initialize controller
     final DailyController controller = Get.put(DailyController());
-
-    return Scaffold(
-      backgroundColor: AppStyles.backgroundColor,
-      appBar: AppBar(
+    final authController = Get.find<AuthController>();
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (bool didPop, Object? result) {
+        authController.loadProgress();
+        print('Back navigation invoked: $didPop');
+      },
+      child: Scaffold(
         backgroundColor: AppStyles.backgroundColor,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: AppStyles.textColor),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: const Text(
-          'Daily Short Questions',
-          style: AppStyles.headingTitle,
-        ),
-        actions: [
-          IconButton(
-            icon: Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.3), // Circle background
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.notifications_none_outlined, // Or Icons.notifications
-                color: AppStyles.textColor,
-                size: 24, // Adjust size
-              ),
-            ),
+        appBar: AppBar(
+          backgroundColor: AppStyles.backgroundColor,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: AppStyles.textColor),
             onPressed: () {
-              // Handle notification tap
-              Get.to(() => NotificationScreen());
+              authController.loadProgress();
+              Navigator.of(context).pop();
             },
           ),
-          SizedBox(width: 10.w), // Add some padding
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Track your overall well-being and physical preparedness',
-              style: AppStyles.bodyText.copyWith(color: AppStyles.hintColor),
-            ),
-            SizedBox(height: 25.h),
+          title: const Text(
+            'Daily Short Questions',
+            style: AppStyles.headingTitle,
+          ),
+          // actions: [
+          //   IconButton(
+          //     icon: Container(
+          //       padding: const EdgeInsets.all(6),
+          //       decoration: BoxDecoration(
+          //         color: Colors.grey.withOpacity(0.3), // Circle background
+          //         shape: BoxShape.circle,
+          //       ),
+          //       child: const Icon(
+          //         Icons.notifications_none_outlined, // Or Icons.notifications
+          //         color: AppStyles.textColor,
+          //         size: 24, // Adjust size
+          //       ),
+          //     ),
+          //     onPressed: () {
+          //       // Handle notification tap
+          //       Get.to(() => NotificationScreen());
+          //     },
+          //   ),
+          //   SizedBox(width: 10.w), // Add some padding
+          // ],
+        ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Track your overall well-being and physical preparedness',
+                style: AppStyles.bodyText.copyWith(color: AppStyles.hintColor),
+              ),
+              SizedBox(height: 25.h),
 
-            // --- How are we feeling? ---
-            Text('How are we feeling?', style: AppStyles.labelText),
-            SizedBox(height: 10.h),
-            TextField(
-              controller: controller.feelingController,
-              maxLines: 4,
-              style: AppStyles.bodyText,
-              decoration: InputDecoration(
-                hintText: 'Describe how you\'re feeling today...',
-                hintStyle: AppStyles.hintStyle,
-                filled: true,
-                fillColor: AppStyles.cardColor, // Input background
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                  borderSide: BorderSide(
-                    color: Colors.grey.shade700,
-                  ), // Border color
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                  borderSide: const BorderSide(
-                    color: AppStyles.primaryColor,
-                  ), // Focused border
+              // --- How are we feeling? ---
+              Text('How are we feeling?', style: AppStyles.labelText),
+              SizedBox(height: 10.h),
+              TextField(
+                controller: controller.feelingController,
+                maxLines: 4,
+                style: AppStyles.bodyText,
+                decoration: InputDecoration(
+                  hintText: 'Describe how you\'re feeling today...',
+                  hintStyle: AppStyles.hintStyle,
+                  filled: true,
+                  fillColor: AppStyles.cardColor, // Input background
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade700,
+                    ), // Border color
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                    borderSide: const BorderSide(
+                      color: AppStyles.primaryColor,
+                    ), // Focused border
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 30.h),
+              SizedBox(height: 30.h),
 
-            // --- Soreness Scale ---
-            Obx(() => _buildSliderSection(
-              context: context,
-              label:
-                  'On a scale of 1 to 10, with 10 being unable to compete, how sore are you?',
-              value: controller.sorenessValue.value,
-              onChanged: controller.updateSorenessValue,
-            )),
-            SizedBox(height: 30.h),
-
-            // --- Sleep Time ---
-            Text('When did you go to sleep?', style: AppStyles.labelText),
-            SizedBox(height: 10.h),
-            Row(
-              children: [
-                Expanded(
-                  child: Obx(() => _buildTimePickerField(
-                    context: context,
-                    isSleepTime: true,
-                    currentTime: controller.sleepTime.value,
-                    hint: 'Sleep Time',
-                    onTap: () => _selectTime(context, controller, true),
-                  )),
+              // --- Soreness Scale ---
+              Obx(
+                () => _buildSliderSection(
+                  context: context,
+                  label:
+                      'On a scale of 1 to 10, with 10 being unable to compete, how sore are you?',
+                  value: controller.sorenessValue.value,
+                  onChanged: controller.updateSorenessValue,
                 ),
-                SizedBox(width: 15.w), // Space between fields
-                Expanded(
-                  child: Obx(() => _buildTimePickerField(
-                    context: context,
-                    isSleepTime: false, // This is for wake time
-                    currentTime: controller.wakeTime.value,
-                    hint: 'Wake Time',
-                    onTap: () => _selectTime(context, controller, false),
-                  )),
+              ),
+              SizedBox(height: 30.h),
+
+              // --- Sleep Time ---
+              Text('When did you go to sleep?', style: AppStyles.labelText),
+              SizedBox(height: 10.h),
+              Row(
+                children: [
+                  Expanded(
+                    child: Obx(
+                      () => _buildTimePickerField(
+                        context: context,
+                        isSleepTime: true,
+                        currentTime: controller.sleepTime.value,
+                        hint: 'Sleep Time',
+                        onTap: () => _selectTime(context, controller, true),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 15.w), // Space between fields
+                  Expanded(
+                    child: Obx(
+                      () => _buildTimePickerField(
+                        context: context,
+                        isSleepTime: false, // This is for wake time
+                        currentTime: controller.wakeTime.value,
+                        hint: 'Wake Time',
+                        onTap: () => _selectTime(context, controller, false),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 30.h),
+
+              // --- Hydration Scale ---
+              Obx(
+                () => _buildSliderSection(
+                  context: context,
+                  label: 'On a scale of 1 to 10, how hydrated are you?',
+                  value: controller.hydrationValue.value,
+                  onChanged: controller.updateHydrationValue,
                 ),
-              ],
-            ),
-            SizedBox(height: 30.h),
+              ),
+              SizedBox(height: 30.h),
 
-            // --- Hydration Scale ---
-            Obx(() => _buildSliderSection(
-              context: context,
-              label: 'On a scale of 1 to 10, how hydrated are you?',
-              value: controller.hydrationValue.value,
-              onChanged: controller.updateHydrationValue,
-            )),
-            SizedBox(height: 30.h),
-
-            // --- Readiness Scale ---
-            Obx(() => _buildSliderSection(
-              context: context,
-              label:
-                  'On a scale of 1 to 10, how ready to compete are you today?',
-              value: controller.readinessValue.value,
-              onChanged: controller.updateReadinessValue,
-            )),
-            SizedBox(height: 40.h), // Space before button if it scrolls
-          ],
+              // --- Readiness Scale ---
+              Obx(
+                () => _buildSliderSection(
+                  context: context,
+                  label:
+                      'On a scale of 1 to 10, how ready to compete are you today?',
+                  value: controller.readinessValue.value,
+                  onChanged: controller.updateReadinessValue,
+                ),
+              ),
+              SizedBox(height: 40.h), // Space before button if it scrolls
+            ],
+          ),
         ),
-      ),
-      // --- Submit Button (Fixed at Bottom) ---
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 20.h),
-        child: SizedBox(
-          height: 40.h,
-          child: Obx(() => MyTextButton(
-            buttonText: controller.isSubmitting.value 
-                ? 'Submitting...' 
-                : 'Submit',
-            onTap: controller.isSubmitting.value
-                ? () {}
-                : () => controller.submitDailyWellness(),
-            isOutline: false,
-          )),
+        // --- Submit Button (Fixed at Bottom) ---
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 20.h),
+          child: SizedBox(
+            height: 40.h,
+            child: Obx(
+              () => MyTextButton(
+                buttonText:
+                    controller.isSubmitting.value ? 'Submitting...' : 'Submit',
+                onTap:
+                    controller.isSubmitting.value
+                        ? () {}
+                        : () => controller.submitDailyWellness(),
+                isOutline: false,
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 
   // --- Helper function to show time picker ---
-  Future<void> _selectTime(BuildContext context, DailyController controller, bool isSleepTime) async {
+  Future<void> _selectTime(
+    BuildContext context,
+    DailyController controller,
+    bool isSleepTime,
+  ) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
@@ -311,7 +338,7 @@ class DailyShortScreen extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     final DailyController controller = Get.find<DailyController>();
-    
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -326,7 +353,9 @@ class DailyShortScreen extends StatelessWidget {
               MainAxisAlignment.spaceBetween, // Pushes icon to the right
           children: [
             Text(
-              controller.formatTime(currentTime), // Display formatted time or placeholder
+              controller.formatTime(
+                currentTime,
+              ), // Display formatted time or placeholder
               style:
                   currentTime != null
                       ? AppStyles.bodyText

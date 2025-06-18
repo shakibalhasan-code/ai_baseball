@@ -17,7 +17,8 @@ const Color kControlBackgroundColor = Color(0xFF2C2C2E);
 // --- ---
 
 class VisualizationScreen extends StatelessWidget {
-  final VisualizationController controller = Get.find<VisualizationController>();
+  final VisualizationController controller =
+      Get.find<VisualizationController>();
 
   VisualizationScreen({super.key});
 
@@ -81,14 +82,14 @@ class VisualizationScreen extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                Text(
-                  controller.remainingBoxTime,
-                  style: TextStyle(
-                    color: kPrimaryYellow,
-                    fontSize: 15.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+                // Text(
+                //   controller.remainingBoxTime,
+                //   style: TextStyle(
+                //     color: kPrimaryYellow,
+                //     fontSize: 15.sp,
+                //     fontWeight: FontWeight.w500,
+                //   ),
+                // ),
               ],
             ),
             SizedBox(height: 40.h),
@@ -218,8 +219,14 @@ class VisualizationScreen extends StatelessWidget {
                   ),
                   Obx(
                     () => _buildControlButton(
-                      icon: controller.isRunning.value ? Icons.pause : Icons.play_arrow,
-                      onPressed: controller.isSaving.value ? () {} : controller.togglePlayPause,
+                      icon:
+                          controller.isRunning.value
+                              ? Icons.pause
+                              : Icons.play_arrow,
+                      onPressed:
+                          controller.isSaving.value
+                              ? () {}
+                              : controller.togglePlayPause,
                       isPrimary: true,
                       isDisabled: controller.isSaving.value,
                     ),
@@ -244,9 +251,10 @@ class VisualizationScreen extends StatelessWidget {
     bool isDisabled = false,
   }) {
     final double buttonSize = isPrimary ? 65.sp : 55.sp;
-    final Color backgroundColor = isPrimary 
-        ? (isDisabled ? kPrimaryYellow.withOpacity(0.5) : kPrimaryYellow)
-        : kControlBackgroundColor;
+    final Color backgroundColor =
+        isPrimary
+            ? (isDisabled ? kPrimaryYellow.withOpacity(0.5) : kPrimaryYellow)
+            : kControlBackgroundColor;
     final Color iconColor = isPrimary ? kBackgroundColor : kControlIconColor;
 
     return ElevatedButton(

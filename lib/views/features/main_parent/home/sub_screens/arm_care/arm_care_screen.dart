@@ -67,18 +67,18 @@ class _ArmCareScreenState extends State<ArmCareScreen> {
 
   // Maps for checkboxes - Updated to match backend validation
   Map<String, bool> focusOptions = {
-    'Scapular': false,           // Backend expects: "Scapular" (not "Scapular Emphasis")
-    'Shoulder': false,           // Backend expects: "Shoulder" (not "Shoulder Emphasis")
-    'Forearms': false,           // ✓ Matches backend
-    'Biceps/Triceps': false,     // ✓ Matches backend
+    'Scapular': false, // Backend expects: "Scapular" (not "Scapular Emphasis")
+    'Shoulder': false, // Backend expects: "Shoulder" (not "Shoulder Emphasis")
+    'Forearms': false, // ✓ Matches backend
+    'Biceps/Triceps': false, // ✓ Matches backend
   };
 
   // Backend expects single selection, not array - need to change this to single selection
   String? selectedExerciseType; // Changed from Map to single selection
   List<String> exerciseTypeOptions = [
-    'Isometric',    // ✓ Matches backend
-    'Eccentric',    // ✓ Matches backend
-    'Oscillating',  // ✓ Matches backend
+    'Isometric', // ✓ Matches backend
+    'Eccentric', // ✓ Matches backend
+    'Oscillating', // ✓ Matches backend
   ];
 
   // Recovery modalities can remain as array (backend accepts array of strings)
@@ -138,7 +138,7 @@ class _ArmCareScreenState extends State<ArmCareScreen> {
   // Handle "Others" tap for recovery options
   void handleOthersTap() {
     final TextEditingController textController = TextEditingController();
-    
+
     Get.dialog(
       AlertDialog(
         backgroundColor: const Color(0xFF2C2C2C),
@@ -163,10 +163,7 @@ class _ArmCareScreenState extends State<ArmCareScreen> {
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: const Text(
-              'Cancel',
-              style: TextStyle(color: Colors.grey),
-            ),
+            child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
           ),
           TextButton(
             onPressed: () {
@@ -178,10 +175,7 @@ class _ArmCareScreenState extends State<ArmCareScreen> {
                 Get.back();
               }
             },
-            child: const Text(
-              'Add',
-              style: TextStyle(color: Colors.yellow),
-            ),
+            child: const Text('Add', style: TextStyle(color: Colors.yellow)),
           ),
         ],
       ),
@@ -266,7 +260,7 @@ class _ArmCareScreenState extends State<ArmCareScreen> {
       }
 
       final authController = Get.find<AuthController>();
-      
+
       // Get current user ID and token
       final userId = authController.currentUser.value?.id;
       final token = authController.accessToken.value;
@@ -298,11 +292,13 @@ class _ArmCareScreenState extends State<ArmCareScreen> {
         'userId': userId,
         'date': DateTime.now().toIso8601String(),
         'armCare': {
-          'focus': getSelectedFocusOptions(),                    // Array of focus areas
-          'exerciseType': selectedExerciseType!,                 // Single exercise type (required)
-          'recoveryModalities': getSelectedRecoveryOptions(),     // Array of recovery methods
-          'exercisesLog': logExerciseController.text.trim(),     // Required string
-        }
+          'focus': getSelectedFocusOptions(), // Array of focus areas
+          'exerciseType':
+              selectedExerciseType!, // Single exercise type (required)
+          'recoveryModalities':
+              getSelectedRecoveryOptions(), // Array of recovery methods
+          'exercisesLog': logExerciseController.text.trim(), // Required string
+        },
       };
 
       // Print for debugging
@@ -330,25 +326,22 @@ class _ArmCareScreenState extends State<ArmCareScreen> {
         );
         return;
       }
-        
-   
 
-     print('Arm care data submitted successfully: ${response.message}');
-         // Show success message
-        Get.snackbar(
-          'Success',
-          'Arm care data submitted successfully!',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+      print('Arm care data submitted successfully: ${response.message}');
+      // Show success message
+      Get.snackbar(
+        'Success',
+        'Arm care data submitted successfully!',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
 
       // Reset form
       _resetForm();
 
       // Navigate back
       // Get.back();
-
     } catch (e) {
       // Handle unexpected errors
       Get.snackbar(
@@ -385,96 +378,108 @@ class _ArmCareScreenState extends State<ArmCareScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppStyles.backgroundColor,
-      appBar: AppBar(
+    final authController = Get.find<AuthController>();
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (bool didPop, Object? result) {
+        authController.loadProgress();
+        print('Back navigation invoked: $didPop');
+      },
+      child: Scaffold(
         backgroundColor: AppStyles.backgroundColor,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: AppStyles.textColor),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: const Text('Arm Care/Recovery', style: AppStyles.headingTitle),
-        actions: [
-          IconButton(
-            icon: Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.3),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.notifications_none_outlined,
-                color: AppStyles.textColor,
-                size: 24,
-              ),
-            ),
+        appBar: AppBar(
+          backgroundColor: AppStyles.backgroundColor,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: AppStyles.textColor),
             onPressed: () {
-              Get.to(() => NotificationScreen());
+              authController.loadProgress();
+              Navigator.of(context).pop();
             },
           ),
-          SizedBox(width: 10.w),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Track your arm care routines and recovery modalities',
-              style: AppStyles.bodyText.copyWith(color: AppStyles.hintColor),
+          title: const Text('Arm Care/Recovery', style: AppStyles.headingTitle),
+          actions: [
+            IconButton(
+              icon: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.3),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.notifications_none_outlined,
+                  color: AppStyles.textColor,
+                  size: 24,
+                ),
+              ),
+              onPressed: () {
+                Get.to(() => NotificationScreen());
+              },
             ),
-            SizedBox(height: 25.h),
-
-            // --- Focus Section ---
-            _buildCheckboxSection(
-              title: "What was your focus for today's arm care?",
-              options: focusOptions,
-              onToggle: toggleFocusOption,
-            ),
-
-            // --- Exercise Type Section (Single Selection) ---
-            _buildExerciseTypeSection(),
-
-            // --- Recovery Modalities Section ---
-            _buildCheckboxSection(
-              title: "What type of recovery modalities did you perform today?",
-              options: recoveryOptions,
-              onToggle: toggleRecoveryOption,
-              showOthers: true,
-            ),
-
-            SizedBox(height: 10.h),
-
-            // --- Log Exercises Section (Required) ---
-            _buildLogWidget(),
-
-            SizedBox(height: 20.h),
+            SizedBox(width: 10.w),
           ],
         ),
-      ),
-      // --- Submit Button (Fixed at Bottom) ---
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(
-          left: 20.w,
-          right: 20.w,
-          bottom: 20.h,
-          top: 10.h,
-        ),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppStyles.primaryColor,
-            foregroundColor: Colors.black,
-            minimumSize: Size(double.infinity, 50.h),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(25.r),
-            ),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Track your arm care routines and recovery modalities',
+                style: AppStyles.bodyText.copyWith(color: AppStyles.hintColor),
+              ),
+              SizedBox(height: 25.h),
+
+              // --- Focus Section ---
+              _buildCheckboxSection(
+                title: "What was your focus for today's arm care?",
+                options: focusOptions,
+                onToggle: toggleFocusOption,
+              ),
+
+              // --- Exercise Type Section (Single Selection) ---
+              _buildExerciseTypeSection(),
+
+              // --- Recovery Modalities Section ---
+              _buildCheckboxSection(
+                title:
+                    "What type of recovery modalities did you perform today?",
+                options: recoveryOptions,
+                onToggle: toggleRecoveryOption,
+                showOthers: true,
+              ),
+
+              SizedBox(height: 10.h),
+
+              // --- Log Exercises Section (Required) ---
+              _buildLogWidget(),
+
+              SizedBox(height: 20.h),
+            ],
           ),
-          onPressed: isSubmitting ? null : submitArmCare,
-          child: Text(
-            isSubmitting ? 'Submitting...' : 'Submit',
-            style: AppStyles.buttonTextStyle,
+        ),
+        // --- Submit Button (Fixed at Bottom) ---
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.only(
+            left: 20.w,
+            right: 20.w,
+            bottom: 20.h,
+            top: 10.h,
+          ),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppStyles.primaryColor,
+              foregroundColor: Colors.black,
+              minimumSize: Size(double.infinity, 50.h),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25.r),
+              ),
+            ),
+            onPressed: isSubmitting ? null : submitArmCare,
+            child: Text(
+              isSubmitting ? 'Submitting...' : 'Submit',
+              style: AppStyles.buttonTextStyle,
+            ),
           ),
         ),
       ),
@@ -526,10 +531,7 @@ class _ArmCareScreenState extends State<ArmCareScreen> {
             groupValue: selectedExerciseType,
             onChanged: (String? value) => selectExerciseType(value!),
             activeColor: AppStyles.checkboxActiveColor,
-            visualDensity: const VisualDensity(
-              horizontal: -4,
-              vertical: -4,
-            ),
+            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
           ),
           Flexible(
             child: Text(
@@ -583,7 +585,11 @@ class _ArmCareScreenState extends State<ArmCareScreen> {
     );
   }
 
-  Widget _buildCheckboxTile(String key, Map<String, bool> optionsMap, Function(String) onToggle) {
+  Widget _buildCheckboxTile(
+    String key,
+    Map<String, bool> optionsMap,
+    Function(String) onToggle,
+  ) {
     return GestureDetector(
       onTap: () => onToggle(key),
       child: Row(
@@ -594,24 +600,19 @@ class _ArmCareScreenState extends State<ArmCareScreen> {
             onChanged: (bool? newValue) => onToggle(key),
             activeColor: AppStyles.checkboxActiveColor,
             checkColor: Colors.black,
-            side: MaterialStateBorderSide.resolveWith(
-              (states) {
-                if (states.contains(MaterialState.selected)) {
-                  return const BorderSide(
-                    color: AppStyles.checkboxActiveColor,
-                    width: 2,
-                  );
-                }
+            side: MaterialStateBorderSide.resolveWith((states) {
+              if (states.contains(MaterialState.selected)) {
                 return const BorderSide(
-                  color: AppStyles.checkboxInactiveColor,
+                  color: AppStyles.checkboxActiveColor,
                   width: 2,
                 );
-              },
-            ),
-            visualDensity: const VisualDensity(
-              horizontal: -4,
-              vertical: -4,
-            ),
+              }
+              return const BorderSide(
+                color: AppStyles.checkboxInactiveColor,
+                width: 2,
+              );
+            }),
+            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(4),
             ),
