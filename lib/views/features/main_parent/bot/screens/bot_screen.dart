@@ -166,6 +166,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
   }
 
   Widget _buildMessageBubble(ChatMessage message) {
+    print(message.message);
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 4.h),
       child: Row(
@@ -301,14 +302,21 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
 
   // Helper method to check if message contains a link
   bool _containsLink(String message) {
-    final urlRegExp = RegExp(r'https?://[^\s]+', caseSensitive: false);
+    final urlRegExp = RegExp(
+      r'https?://[^\s<>"{}|\\^`\[\]]+',
+      caseSensitive: false,
+    );
     return urlRegExp.hasMatch(message);
   }
 
   // Helper method to extract the first link from message
   String _extractLink(String message) {
-    final urlRegExp = RegExp(r'https?://[^\s]+', caseSensitive: false);
+    final urlRegExp = RegExp(
+      r'https?://[^\s<>"{}|\\^`\[\]]+',
+      caseSensitive: false,
+    );
     final match = urlRegExp.firstMatch(message);
+    print('Extracted link: ${match?.group(0)}'); // Debug print
     return match?.group(0) ?? '';
   }
 
@@ -343,27 +351,45 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
   // Method to open/launch the link
   Future<void> _openLink(String url) async {
     try {
-      final Uri uri = Uri.parse(url);
+      // Clean and validate the URL
+      String cleanUrl = url.trim();
+
+      // Add debug print to see what URL we're trying to open
+      print('Attempting to open URL: "$cleanUrl"');
+
+      // Ensure the URL has a proper scheme
+      if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+        cleanUrl = 'https://$cleanUrl';
+      }
+
+      final Uri uri = Uri.parse(cleanUrl);
+      print('Parsed URI: $uri');
+
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
+        print('Successfully launched URL');
       } else {
+        print('canLaunchUrl returned false');
         // Show error message if link can't be opened
         Get.snackbar(
           'Error',
-          'Could not open the link',
+          'Could not open the link: $cleanUrl',
           backgroundColor: Colors.red,
           colorText: Colors.white,
           snackPosition: SnackPosition.BOTTOM,
+          duration: Duration(seconds: 3),
         );
       }
     } catch (e) {
+      print('Exception occurred: $e');
       // Show error message if there's an exception
       Get.snackbar(
         'Error',
-        'Invalid link format',
+        'Error opening link: ${e.toString()}',
         backgroundColor: Colors.red,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
+        duration: Duration(seconds: 3),
       );
     }
   }
