@@ -394,7 +394,7 @@ class _ArmCareScreenState extends State<ArmCareScreen> {
           icon: const Icon(Icons.arrow_back_ios, color: AppStyles.textColor),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text('Arm Care', style: AppStyles.headingTitle),
+        title: const Text('Arm Care/Recovery', style: AppStyles.headingTitle),
         actions: [
           IconButton(
             icon: Container(

@@ -326,7 +326,8 @@ class HomeScreen extends StatelessWidget {
                       Icons.track_changes,
                       pillarFocusBg,
                     );
-                  }), // Example Icon
+                  }),
+
                   Obx(() {
                     return _buildPillarChip(
                       authController.currentUser.value?.threeWordThtDescribeYou
@@ -336,7 +337,7 @@ class HomeScreen extends StatelessWidget {
                       Icons.sync_alt,
                       pillarConsistencyBg,
                     );
-                  }), // Example Icon
+                  }),
                   Obx(() {
                     return _buildPillarChip(
                       authController.currentUser.value?.threeWordThtDescribeYou
@@ -346,7 +347,7 @@ class HomeScreen extends StatelessWidget {
                       Icons.whatshot,
                       pillarGritBg,
                     );
-                  }), // Example Icon
+                  }),
                 ],
               ),
             ),
@@ -467,7 +468,7 @@ class HomeScreen extends StatelessWidget {
             height: buttonHeight,
 
             child: buildAccessButton(
-              'Arm Care',
+              'Arm Care /Recovery',
               AppIcons.arm,
               () => Get.toNamed(AppRoute.armCare),
             ),
