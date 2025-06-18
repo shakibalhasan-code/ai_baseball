@@ -89,7 +89,7 @@ class ProfileScreen extends StatelessWidget {
                       ), // Explicit size for SVG
                       title: "Logout",
                       hasLast: false, // No trailing icon for logout
-                      ontap: () => showLogOutSheet(context,),
+                      ontap: () => showLogOutSheet(context),
                     ),
                   ],
                 ),
@@ -106,11 +106,11 @@ class ProfileScreen extends StatelessWidget {
     return Obx(() {
       final pickedImage = controller.pickedImage.value;
       final user = authController.currentUser.value;
-      
+
       return InkWell(
-        onTap: () async {
-          await controller.pickImage();
-        },
+        // onTap: () async {
+        //   await controller.pickImage();
+        // },
         borderRadius: BorderRadius.circular(100.r),
         child: Stack(
           alignment: Alignment.center,
@@ -120,67 +120,61 @@ class ProfileScreen extends StatelessWidget {
               height: 100.w,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: AppStyles.primaryColor,
-                  width: 2,
-                ),
+                border: Border.all(color: AppStyles.primaryColor, width: 2),
                 color: AppStyles.cardColor,
               ),
               child: ClipOval(
-                child: pickedImage != null
-                    ? Image.file(
-                        File(pickedImage.path),
-                        fit: BoxFit.cover,
-                      )
-                    : user?.image != null && user!.image!.isNotEmpty
+                child:
+                    pickedImage != null
+                        ? Image.file(File(pickedImage.path), fit: BoxFit.cover)
+                        : user?.image != null && user!.image!.isNotEmpty
                         ? Image.network(
-                           ImageUtils.getProfileImageUrl(user.image!),
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Image.asset(
-                                AppImages.avatarLogo,
-                                fit: BoxFit.cover,
-                              );
-                            },
-                          )
-                        : Image.asset(
-                            AppImages.avatarLogo,
-                            fit: BoxFit.cover,
-                          ),
+                          ImageUtils.getProfileImageUrl(user.image!),
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              AppImages.avatarLogo,
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        )
+                        : Image.asset(AppImages.avatarLogo, fit: BoxFit.cover),
               ),
             ),
+
             // Positioned edit icon
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: Container(
-                padding: EdgeInsets.all(5.w),
-                decoration: BoxDecoration(
-                  color: AppStyles.primaryColor,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppStyles.backgroundColor,
-                    width: 2,
-                  ),
-                ),
-                child: Icon(
-                  Icons.edit,
-                  color: Colors.white,
-                  size: 18.w,
-                ),
-              ),
-            ),
+            // Positioned(
+            //   bottom: 0,
+            //   right: 0,
+            //   child: Container(
+            //     padding: EdgeInsets.all(5.w),
+            //     decoration: BoxDecoration(
+            //       color: AppStyles.primaryColor,
+            //       shape: BoxShape.circle,
+            //       border: Border.all(
+            //         color: AppStyles.backgroundColor,
+            //         width: 2,
+            //       ),
+            //     ),
+            //     child: Icon(
+            //       Icons.edit,
+            //       color: Colors.white,
+            //       size: 18.w,
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       );
     });
   }
+
   /// Builds the user's name and email display section.
   Widget _buildUserInfo() {
     return Obx(() {
       final user = authController.currentUser.value;
       String fullName = 'John David'; // Default fallback
-      
+
       if (user != null) {
         // If firstName and lastName are available, use them
         if (user.firstName != null && user.lastName != null) {
@@ -190,12 +184,15 @@ class ProfileScreen extends StatelessWidget {
           fullName = user.name.isNotEmpty ? user.name : 'User';
         }
       }
-      
+
       final email = user?.email ?? 'john@gmail.com';
-      
+
       return Column(
         children: [
-          Text(fullName.isNotEmpty ? fullName : 'User', style: AppStyles.headingLarge),
+          Text(
+            fullName.isNotEmpty ? fullName : 'User',
+            style: AppStyles.headingLarge,
+          ),
           SizedBox(height: 4.h),
           Text(
             email,
@@ -314,8 +311,8 @@ class ProfileScreen extends StatelessWidget {
                     child: MyTextButton(
                       buttonText: 'Yes, Logout',
                       onTap: () {
-                        Get.back(); 
-                        authController.logout(); 
+                        Get.back();
+                        authController.logout();
                       },
                       isOutline: false,
                     ),
@@ -330,7 +327,3 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 }
-
-
-
-
