@@ -6,6 +6,7 @@ import 'package:baseball_ai/views/glob_widgets/my_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AuthScreen extends StatelessWidget {
   const AuthScreen({super.key});
@@ -34,6 +35,7 @@ class AuthScreen extends StatelessWidget {
                 color: AppStyles.primaryColor,
                 fontSize: 40.sp, // Use ScreenUtil for font size
                 fontWeight: FontWeight.w800,
+                fontFamily: GoogleFonts.bungee().fontFamily,
               ),
             ),
             Text(
@@ -42,6 +44,7 @@ class AuthScreen extends StatelessWidget {
                 color: Colors.white,
                 fontSize: 16.sp, // Use ScreenUtil for font size
                 fontWeight: FontWeight.w400,
+                fontFamily: GoogleFonts.workSans().fontFamily,
               ),
             ),
             SizedBox(height: 40),
