@@ -57,7 +57,9 @@ class AuthController extends GetxController {
     _loadSavedToken();
   }
 
-  void loadProgress() async {
+  void loadProgress([
+    void Function(DailyLogRetrievalResponse)? callback,
+  ]) async {
     String token = accessToken.value;
     print('Loading progress with token: $token');
     String userId = currentUser.value?.id ?? '';
@@ -70,6 +72,7 @@ class AuthController extends GetxController {
             if (response.success && response.data != null) {
               dailyLogResponse.value = response;
               print('Daily Data Loaded: ${response.data}');
+              callback?.call(dailyLogResponse.value);
               // You can update your UI or state here with the loaded data
             } else {
               print('Failed to load daily data: ${response.message}');

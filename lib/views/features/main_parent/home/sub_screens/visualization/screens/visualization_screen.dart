@@ -42,19 +42,19 @@ class VisualizationScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.notifications_none,
-              color: kTextColor,
-              size: 24.sp,
-            ),
-            onPressed: () {
-              Get.to(NotificationScreen());
-            },
-          ),
-          SizedBox(width: 10.w),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: Icon(
+        //       Icons.notifications_none,
+        //       color: kTextColor,
+        //       size: 24.sp,
+        //     ),
+        //     onPressed: () {
+        //       Get.to(NotificationScreen());
+        //     },
+        //   ),
+        //   SizedBox(width: 10.w),
+        // ],
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
