@@ -398,6 +398,12 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "rename_app",
+      "rootUri": "file:///C:/Users/zaman/AppData/Local/Pub/Cache/hosted/pub.dev/rename_app-1.6.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "sky_engine",
       "rootUri": "file:///C:/src/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",

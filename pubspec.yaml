@@ -26,6 +26,7 @@ dependencies:
   url_launcher: ^6.2.4
   google_fonts: ^6.2.1
   flutter_launcher_icons: ^0.14.4
+  rename_app: ^1.6.3
 
 dev_dependencies:
   flutter_test:
