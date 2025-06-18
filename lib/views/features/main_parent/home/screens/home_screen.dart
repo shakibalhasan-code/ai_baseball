@@ -4,7 +4,8 @@ import 'package:baseball_ai/core/utils/const/app_icons.dart';
 import 'package:baseball_ai/core/utils/const/app_images.dart';
 import 'package:baseball_ai/core/utils/const/app_route.dart';
 import 'package:baseball_ai/views/features/auth/controller/auth_controller.dart';
-import 'package:baseball_ai/views/features/main_parent/home/sub_screens/notification_screen.dart';
+// TODO: Re-add when notification screen is implemented
+// import 'package:baseball_ai/views/features/main_parent/home/sub_screens/notification_screen.dart';
 import 'package:baseball_ai/views/features/main_parent/home/sub_screens/performance/performance_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -312,44 +313,13 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 16),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Row(
-                spacing: 4,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Obx(() {
-                    return _buildPillarChip(
-                      authController.currentUser.value?.threeWordThtDescribeYou
-                              .split(',')
-                              .first
-                              .capitalize ??
-                          'Focus',
-                      Icons.track_changes,
-                      pillarFocusBg,
-                    );
-                  }),
-
-                  Obx(() {
-                    return _buildPillarChip(
-                      authController.currentUser.value?.threeWordThtDescribeYou
-                              .split(',')[1]
-                              .capitalize ??
-                          'Consistency',
-                      Icons.sync_alt,
-                      pillarConsistencyBg,
-                    );
-                  }),
-                  Obx(() {
-                    return _buildPillarChip(
-                      authController.currentUser.value?.threeWordThtDescribeYou
-                              .split(',')[2]
-                              .capitalize ??
-                          'Grit',
-                      Icons.whatshot,
-                      pillarGritBg,
-                    );
-                  }),
-                ],
-              ),
+              child: Obx(() {
+                return Row(
+                  spacing: 4,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: _buildPillarChips(),
+                );
+              }),
             ),
           ],
         ),
@@ -379,6 +349,50 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  List<Widget> _buildPillarChips() {
+    final threeWords =
+        authController.currentUser.value?.threeWordThtDescribeYou;
+
+    if (threeWords == null || threeWords.isEmpty) {
+      return [const SizedBox.shrink()];
+    }
+
+    final words =
+        threeWords
+            .split(',')
+            .map((word) => word.trim())
+            .where((word) => word.isNotEmpty)
+            .toList();
+    final List<Widget> chips = [];
+
+    // Define the pillar data
+    final pillarData = [
+      {'icon': Icons.track_changes, 'color': pillarFocusBg, 'default': 'Focus'},
+      {
+        'icon': Icons.sync_alt,
+        'color': pillarConsistencyBg,
+        'default': 'Consistency',
+      },
+      {'icon': Icons.whatshot, 'color': pillarGritBg, 'default': 'Grit'},
+    ];
+
+    for (int i = 0; i < pillarData.length; i++) {
+      if (i < words.length && words[i].isNotEmpty) {
+        chips.add(
+          _buildPillarChip(
+            words[i].capitalize ?? pillarData[i]['default'] as String,
+            pillarData[i]['icon'] as IconData,
+            pillarData[i]['color'] as Color,
+          ),
+        );
+      } else {
+        chips.add(const SizedBox.shrink());
+      }
+    }
+
+    return chips;
   }
 
   Widget _buildDailyCheckinCard() {
@@ -930,49 +944,6 @@ class HomeScreen extends StatelessWidget {
           //     ),
           //   ],
           // ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPerformanceMetric(
-    String title,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: cardBackground.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3), width: 1),
-      ),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, color: color, size: 20),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            value,
-            style: TextStyle(
-              color: textPrimary,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            style: TextStyle(color: textSecondary, fontSize: 12),
-            textAlign: TextAlign.center,
-          ),
         ],
       ),
     );
